@@ -23,4 +23,23 @@ Open the project in VS Code:
 code .
 ```
 
+Go to the debug panel and ensure `Run extension` is selected in the dropdown.
+
 Now hit F5 to load a new instance of VS Code that loads the extenion for testing and debugging.
+
+The new instance is automatically opened to the example workspace that's under `./test-workspace`.
+
+
+## Run tests
+
+Open the project in VS Code.
+
+Go to the debug panel and ensure `Extension Tests` is selected in the dropdown.
+
+Now hit F5 to run the tests. The outcome will be reported in the debug console.
+
+You can also run in the console, but only if no VS Code instance is open:
+
+```bash
+npm test
+```
