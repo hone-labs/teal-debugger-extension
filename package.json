@@ -88,7 +88,9 @@
 								"@vscode/test-electron": "^1.6.2"
 				},
 				"dependencies": {
+								"@algo-builder/runtime": "^2.0.0",
 								"vscode-debugadapter": "^1.49.0",
-								"vscode-debugprotocol": "^1.49.0"
+								"vscode-debugprotocol": "^1.49.0",
+								"yaml": "^1.10.2"
 				}
 }

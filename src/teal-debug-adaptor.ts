@@ -2,7 +2,7 @@
 // Provides TEAL debugging capabilities to VS Code.
 //
 
-import { LoggingDebugSession, Scope, Source, StackFrame, StoppedEvent, Thread } from 'vscode-debugadapter';
+import { LoggingDebugSession, Scope, Source, StackFrame, StoppedEvent, TerminatedEvent, Thread } from 'vscode-debugadapter';
 import { DebugProtocol } from 'vscode-debugprotocol';
 import { TealRuntime } from './teal-runtime';
 import * as path from "path";
@@ -63,7 +63,7 @@ export class TealDebugAdaptor extends LoggingDebugSession {
         console.log(`Launch request:`);
         console.log(args);
 
-        await this.tealRuntime.start(args.program, !!args.stopOnEntry);
+        await this.tealRuntime.start(args.program);
 
         if (args.stopOnEntry) {
             //
@@ -74,6 +74,13 @@ export class TealDebugAdaptor extends LoggingDebugSession {
         }
         else {
             this.tealRuntime.continue();
+
+            //
+            // Debugging session has ended.
+            //
+            // https://microsoft.github.io/debug-adapter-protocol/specification#Events_Terminated
+            //
+            this.sendEvent(new TerminatedEvent());
         }
 
         this.sendResponse(response);
@@ -176,7 +183,15 @@ export class TealDebugAdaptor extends LoggingDebugSession {
     //
     // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_Continue
 	protected continueRequest(response: DebugProtocol.ContinueResponse, args: DebugProtocol.ContinueArguments): void {
+
         this.tealRuntime.continue();
+
+        //
+        // Debugging session has ended.
+        //
+        // https://microsoft.github.io/debug-adapter-protocol/specification#Events_Terminated
+        //
+        this.sendEvent(new TerminatedEvent());
 
 		this.sendResponse(response);
 	}
@@ -188,13 +203,23 @@ export class TealDebugAdaptor extends LoggingDebugSession {
     //
 	protected nextRequest(response: DebugProtocol.NextResponse, args: DebugProtocol.NextArguments): void {
 
-        this.tealRuntime.step();
-
-        //
-        // Tells VS Code that we have stopped ater a step.
-        // https://microsoft.github.io/debug-adapter-protocol/specification#Events_Stopped
-        //
-        this.sendEvent(new StoppedEvent('step', THREAD_ID));
+        if (this.tealRuntime.step()) {
+            //
+            // Debugging can continue.
+            //
+            // Tells VS Code that we have stopped ater a step.
+            // https://microsoft.github.io/debug-adapter-protocol/specification#Events_Stopped
+            //
+            this.sendEvent(new StoppedEvent('step', THREAD_ID));
+        }
+        else {
+            //
+            // Debugging session has ended.
+            //
+            // https://microsoft.github.io/debug-adapter-protocol/specification#Events_Terminated
+            //
+            this.sendEvent(new TerminatedEvent());
+        }
 
         this.sendResponse(response);
 	}
