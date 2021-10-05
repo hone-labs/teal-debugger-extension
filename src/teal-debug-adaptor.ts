@@ -2,8 +2,10 @@
 // Provides TEAL debugging capabilities to VS Code.
 //
 
-import { InitializedEvent, LoggingDebugSession, Scope, Thread } from 'vscode-debugadapter';
+import { LoggingDebugSession, Scope, Source, StackFrame, StoppedEvent, Thread } from 'vscode-debugadapter';
 import { DebugProtocol } from 'vscode-debugprotocol';
+import { TealRuntime } from './teal-runtime';
+import * as path from "path";
 
 /**
  * This interface describes the specific launch attributes.
@@ -30,6 +32,11 @@ const THREAD_ID = 1;
 
 export class TealDebugAdaptor extends LoggingDebugSession {
 
+    //
+    // Runtime for compiling, running and debugging TEAL code.
+    //
+    private tealRuntime = new TealRuntime();
+
 	/**
 	 * Creates a new debug adapter that is used for one debug session.
 	 * We configure the default implementation of a debug adapter here.
@@ -39,7 +46,9 @@ export class TealDebugAdaptor extends LoggingDebugSession {
 
         console.log(`Created Teal debug adaptor.`);
 
-		// This debugger uses zero-based lines and columns
+        //
+		// This debugger uses zero-based lines and columns.
+        //
 		this.setDebuggerLinesStartAt1(false);
 		this.setDebuggerColumnsStartAt1(false);
 	}
@@ -53,6 +62,19 @@ export class TealDebugAdaptor extends LoggingDebugSession {
 
         console.log(`Launch request:`);
         console.log(args);
+
+        await this.tealRuntime.start(args.program, !!args.stopOnEntry);
+
+        if (args.stopOnEntry) {
+            //
+            // Tells VS Code that we have stopped on entry.
+            // https://microsoft.github.io/debug-adapter-protocol/specification#Events_Stopped
+            //
+            this.sendEvent(new StoppedEvent('entry', THREAD_ID));
+        }
+        else {
+            this.tealRuntime.continue();
+        }
 
         this.sendResponse(response);
 	}
@@ -79,15 +101,27 @@ export class TealDebugAdaptor extends LoggingDebugSession {
     //
 	protected stackTraceRequest(response: DebugProtocol.StackTraceResponse, args: DebugProtocol.StackTraceArguments): void {
 
-        console.log(`Stack request:`);
-        console.log(args);
-
-		response.body = {
-			stackFrames: [
-                //TODO: Add stackframes here.
-            ],
-            totalFrames: 0,
-		};
+        const filePath = this.tealRuntime.getLoadedFilePath();
+        if (filePath) {
+            // https://microsoft.github.io/debug-adapter-protocol/specification#Types_Source
+            const source = new Source(path.basename(filePath), this.convertDebuggerPathToClient(filePath), undefined, undefined, undefined);
+            const line = this.convertDebuggerLineToClient(this.tealRuntime.getCurrentLine());
+    
+            // https://microsoft.github.io/debug-adapter-protocol/specification#Types_StackFrame
+            const stackFrame = new StackFrame(0, "main", source, line);
+    
+            response.body = {
+                stackFrames: [ stackFrame ], // No function calls yet, so hardcoded to a single stack frame.
+                totalFrames: 1,
+            };
+        }
+        else {
+            response.body = {
+                stackFrames: [],
+                totalFrames: 0,
+            };
+        }
+         
 		this.sendResponse(response);
 	}
 
@@ -142,7 +176,8 @@ export class TealDebugAdaptor extends LoggingDebugSession {
     //
     // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_Continue
 	protected continueRequest(response: DebugProtocol.ContinueResponse, args: DebugProtocol.ContinueArguments): void {
-		//TODO;
+        this.tealRuntime.continue();
+
 		this.sendResponse(response);
 	}
 
@@ -152,8 +187,16 @@ export class TealDebugAdaptor extends LoggingDebugSession {
     // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_Next
     //
 	protected nextRequest(response: DebugProtocol.NextResponse, args: DebugProtocol.NextArguments): void {
-		//TODO:
-		this.sendResponse(response);
+
+        this.tealRuntime.step();
+
+        //
+        // Tells VS Code that we have stopped ater a step.
+        // https://microsoft.github.io/debug-adapter-protocol/specification#Events_Stopped
+        //
+        this.sendEvent(new StoppedEvent('step', THREAD_ID));
+
+        this.sendResponse(response);
 	}
 }
 
