@@ -20,6 +20,7 @@ export class TealRuntime {
 
     //
     // The TEAL interpreter.
+    //
     private interpreter = new Interpreter();
 
     //
@@ -41,6 +42,14 @@ export class TealRuntime {
         return this.currentLine;
     }
 
+    //
+    // Get the contents of the data stack.
+    //
+    getDataStack(): number[] {
+        //TODO: Need to open up this data properly in algo-builder/runtime.
+        const stackValues = (this.interpreter.stack as any)._store;
+        return stackValues;
+    }
 
     //
     // Starts a TEAL program in the runtime.

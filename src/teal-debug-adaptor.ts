@@ -155,6 +155,7 @@ export class TealDebugAdaptor extends LoggingDebugSession {
 	protected async variablesRequest(response: DebugProtocol.VariablesResponse, args: DebugProtocol.VariablesArguments, request?: DebugProtocol.Request): Promise<void> {
 
         if (args.variablesReference === 1) {
+
             //
             // Data stack variables request.
             //
@@ -164,9 +165,13 @@ export class TealDebugAdaptor extends LoggingDebugSession {
                 //
                 // https://microsoft.github.io/debug-adapter-protocol/specification#Types_Variable
                 //
-                variables: [
-                    
-                ],
+                variables: this.tealRuntime.getDataStack().map((value, index): DebugProtocol.Variable => {
+                    return {
+                        name: `[${index}]`,
+                        value: value.toString(),
+                        variablesReference: 0, // This can be used to indicate the variable has sub-variables.
+                    };
+                }),
             };
         }
         else {
