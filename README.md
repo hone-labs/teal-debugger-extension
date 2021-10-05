@@ -29,6 +29,10 @@ Now hit F5 to load a new instance of VS Code that loads the extenion for testing
 
 The new instance is automatically opened to the example workspace that's under `./test-workspace`.
 
+Open the example TEAL file and hit F5 to start debugging it.
+
+Hit F10 to single step through the TEAL file. You can view the TEAL data stack in the debugger pane.
+
 ## Rebuild and reload
 
 While debugging the extension (from the previous section) change code in the extension (it will be built automatically using Webpack watch), then in the new instance run `Developer: Reload Window` to load the new code.
