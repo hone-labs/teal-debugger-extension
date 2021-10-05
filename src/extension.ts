@@ -1,6 +1,8 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import { logCalls } from './lib/log-calls';
+import { TealDebugAdaptor as TealDebugAdaptor } from './teal-debug-adaptor';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -8,7 +10,7 @@ export function activate(context: vscode.ExtensionContext) {
 	
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "teal-debugger-extension" is now active!');
+	console.log(`Teal-debugger-extension is activated`);
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
@@ -19,8 +21,18 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.showInformationMessage('Hello World from teal-debugger-extension!');
 	});
 
+    //
+    // Register the factory that creates the debugger session for the 'teal' debugger.
+    context.subscriptions.push(vscode.debug.registerDebugAdapterDescriptorFactory('teal', new DebugAdapterFactory()));
+
 	context.subscriptions.push(disposable);
 }
 
 // this method is called when your extension is deactivated
 export function deactivate() {}
+
+class DebugAdapterFactory implements vscode.DebugAdapterDescriptorFactory {
+	createDebugAdapterDescriptor(_session: vscode.DebugSession): vscode.ProviderResult<vscode.DebugAdapterDescriptor> {
+		return new vscode.DebugAdapterInlineImplementation(logCalls(new TealDebugAdaptor()));
+	}
+}
