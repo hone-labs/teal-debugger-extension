@@ -47,3 +47,19 @@ You can also run in the console, but only if no VS Code instance is open:
 ```bash
 npm test
 ```
+
+## Resources
+
+- This code developed from the VS Code "your first extension" tutorial:
+    - https://code.visualstudio.com/api/get-started/your-first-extension
+- VS Code API reference:
+    - https://code.visualstudio.com/api/references/vscode-api
+- Implementing a VS Code debugger extension:
+    - https://code.visualstudio.com/api/extension-capabilities/overview#debugging
+- List of debugger adaptors:
+    - https://microsoft.github.io/debug-adapter-protocol/implementors/adapters/
+- Debugger API reference:
+    - https://code.visualstudio.com/api/references/vscode-api#debug
+- Debug Adaptor Protocol (this protocol is independent of VS Code):
+    - https://microsoft.github.io/debug-adapter-protocol/
+    - https://microsoft.github.io/debug-adapter-protocol/overview
