@@ -22,7 +22,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Run tests
+        uses: GabrielBB/xvfb-action@v1
+        with:
+          run: npm test        
       
-      - name: Unit tests
-        run: |
-          npm test
