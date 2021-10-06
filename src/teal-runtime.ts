@@ -14,9 +14,9 @@ export class TealRuntime {
     private loadedTealFilePath?: string = undefined;
 
     //
-    // Current line of the debugger.
+    // Index of the next instruction to execute.
     //
-    private currentLine: number = 0;
+    private nextInstructionIndex: number = 0;
 
     //
     // The TEAL interpreter.
@@ -38,8 +38,13 @@ export class TealRuntime {
     //
     // Get the current line of the debugger.
     //
-    getCurrentLine(): number { 
-        return this.currentLine;
+    getCurrentLine(): number | undefined { 
+        if (this.nextInstructionIndex >= 0 && this.nextInstructionIndex < this.instructions.length) {
+            return this.instructions[this.nextInstructionIndex].line - 1; // Convert from 1-based to 0-based.
+        }
+        else {
+            return undefined;
+        }
     }
 
     //
@@ -57,7 +62,7 @@ export class TealRuntime {
     async start(tealFilePath: string): Promise<void> {
 
         this.loadedTealFilePath = tealFilePath;
-        this.currentLine = 0;
+        this.nextInstructionIndex = 0;
 
         const contents = await readFile(tealFilePath);
 
@@ -69,8 +74,8 @@ export class TealRuntime {
     // Continue running the TEAL program until a breakpoint or end of program.
     //
     continue() {
-        while (this.currentLine < this.instructions.length - 1) {
-            this.step();
+        while (this.step()) {
+            // Continue until we need to stop.
         }
     }
 
@@ -79,16 +84,16 @@ export class TealRuntime {
     // Returns true to continue or false to end debugging.
     //
     step(): boolean {
-        if (this.currentLine > this.instructions.length - 1) {
+        if (this.nextInstructionIndex > this.instructions.length - 1) {
             //
             // Don't step beyond the end.
             //
             return false;
         }
 
-        const instruction = this.instructions[this.currentLine];
+        const instruction = this.instructions[this.nextInstructionIndex];
         instruction.execute(this.interpreter!.stack);
-        this.currentLine += 1;
+        this.nextInstructionIndex += 1;
         return true;
     }
 

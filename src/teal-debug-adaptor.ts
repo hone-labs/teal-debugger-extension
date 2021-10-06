@@ -112,7 +112,7 @@ export class TealDebugAdaptor extends LoggingDebugSession {
         if (filePath) {
             // https://microsoft.github.io/debug-adapter-protocol/specification#Types_Source
             const source = new Source(path.basename(filePath), this.convertDebuggerPathToClient(filePath), undefined, undefined, undefined);
-            const line = this.convertDebuggerLineToClient(this.tealRuntime.getCurrentLine());
+            const line = this.tealRuntime.getCurrentLine() !== undefined && this.convertDebuggerLineToClient(this.tealRuntime.getCurrentLine()!) || undefined;
     
             // https://microsoft.github.io/debug-adapter-protocol/specification#Types_StackFrame
             const stackFrame = new StackFrame(0, "main", source, line);

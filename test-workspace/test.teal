@@ -1,7 +1,10 @@
 #pragma version 3
+
 int 1
 int 5
 +
+
+// Commented line (the debugger should skip this).
 int 3
 int 3
 +
