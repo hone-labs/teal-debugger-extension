@@ -21,6 +21,17 @@
                 "title": "Hello World"
             }
         ],
+        "languages": [
+            {
+                "id": "teal",
+                "extensions": [
+                    ".teal"
+                ],
+                "aliases": [
+                    "Teal"
+                ]
+            }
+        ],
         "debuggers": [
             {
                 "type": "teal",

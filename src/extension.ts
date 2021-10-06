@@ -22,7 +22,14 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
     //
+    // Register a configuration provider.
+    // This allows us to start debuging without having a debug configuration in the project.
+    //
+	context.subscriptions.push(vscode.debug.registerDebugConfigurationProvider('teal', new DebugConfigurationProvider));
+
+    //
     // Register the factory that creates the debugger session for the 'teal' debugger.
+    //
     context.subscriptions.push(vscode.debug.registerDebugAdapterDescriptorFactory('teal', new DebugAdapterFactory()));
 
 	context.subscriptions.push(disposable);
@@ -34,5 +41,38 @@ export function deactivate() {}
 class DebugAdapterFactory implements vscode.DebugAdapterDescriptorFactory {
 	createDebugAdapterDescriptor(_session: vscode.DebugSession): vscode.ProviderResult<vscode.DebugAdapterDescriptor> {
 		return new vscode.DebugAdapterInlineImplementation(logCalls(new TealDebugAdaptor()));
+	}
+}
+
+class DebugConfigurationProvider implements vscode.DebugConfigurationProvider {
+
+	/**
+	 * Massage a debug configuration just before a debug session is being launched,
+	 * e.g. add all missing attributes to the debug configuration.
+	 */
+	resolveDebugConfiguration(folder: vscode.WorkspaceFolder | undefined, config: vscode.DebugConfiguration, token?: vscode.CancellationToken): vscode.ProviderResult<vscode.DebugConfiguration> {
+		
+		if (!config.type && !config.request && !config.name) {
+            //
+            // Launch.json is missing or empty.
+            //
+			const editor = vscode.window.activeTextEditor;
+			if (editor && editor.document.languageId === 'teal') {
+				config.type = 'teal';
+				config.name = 'Launch';
+				config.request = 'launch';
+				config.program = '${file}';
+				config.stopOnEntry = true;
+			}
+		}
+
+		if (!config.program) {
+			return vscode.window.showInformationMessage("Cannot find a program to debug")
+                .then(_ => {
+				    return undefined;	// abort launch
+			    });
+		}
+
+		return config;
 	}
 }
