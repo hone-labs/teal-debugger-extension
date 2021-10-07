@@ -59,3 +59,28 @@ jobs:
       - name: Create Extension Package
         run: |
           npm run package
+
+      # https://github.com/actions/create-release
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            Release  ${{ github.ref }}
+          draft: false
+          prerelease: false        
+
+      # https://github.com/actions/upload-release-asset
+      - name: Upload release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # Pulls the URL from the preceding step.
+          asset_path: ./teal-debugger-extension-${{ needs.get_version.outputs.version }}.vsix
+          asset_name: teal-debugger-extension-${{ needs.get_version.outputs.version }}.vsix
+          asset_content_type: application/octet-stream
