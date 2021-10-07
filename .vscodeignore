@@ -11,3 +11,9 @@ vsc-extension-quickstart.md
 **/.eslintrc.json
 **/*.map
 **/*.ts
+check-version.js
+test-workspace/**
+.github/**
+.git/**
+r.bat
+*.vsix

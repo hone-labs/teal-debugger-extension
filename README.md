@@ -52,6 +52,20 @@ You can also run in the console, but only if no VS Code instance is open:
 npm test
 ```
 
+## Create an installable package for the extension
+
+```bash
+npm run package
+```
+
+Output is `teal-debugger-extension-<version>.vsix`.
+
+Install the extension like this:
+
+```bash
+code --install-extension teal-debugger-extension-<version>.vsix
+```
+
 ## Resources
 
 - This code developed from the VS Code "your first extension" tutorial:
