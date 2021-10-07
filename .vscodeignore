@@ -12,7 +12,7 @@ vsc-extension-quickstart.md
 **/*.map
 **/*.ts
 check-version.js
-test-workspace/**
+test/**
 .github/**
 .git/**
 r.bat
