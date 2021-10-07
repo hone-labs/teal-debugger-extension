@@ -1,0 +1,61 @@
+name: Labelled release
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  get_version:
+    runs-on: ubuntu-latest # Getting the version relies on Linux commands.
+    name: Get version
+
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get version
+        id: get_version
+        run: |
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/v\(.*\),\1,')
+
+          echo "::set-output name=version::$VERSION"
+
+          echo "Found version: $VERSION"
+
+  build:
+    needs: get_version
+    runs-on: ubuntu-latest # Can build for all platforms on Linux.
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          cache: 'npm'
+
+      - name: Cache
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: cache
+          key: ${{ runner.os }}-cache
+
+      - name: Check version
+        run: |
+          export VERSION=${{ needs.get_version.outputs.version }}
+          node check-version.js
+
+      - name: Install dependencies
+        run: |
+          npm ci
+
+      - name: Test
+        run: |
+          npm test
+
+      - name: Create Extension Package
+        run: |
+          npm run package
