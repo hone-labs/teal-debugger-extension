@@ -86,12 +86,20 @@ export class TealRuntime {
 
         const txnParameters: any = configuration.transactionParams;
         if (txnParameters.fromAccount) {
-            txnParameters.fromAccountAddr = accountMap.get(txnParameters.fromAccount)?.address;
+            const account = accountMap.get(txnParameters.fromAccount);
+            if (!account) {
+                throw new Error(`Failed to find account ${txnParameters.fromAccount} in the configuration.`);
+            }
+            txnParameters.fromAccountAddr = account.address;
             delete txnParameters.fromAccount;
         }
 
         if (txnParameters.toAccount) {
-            txnParameters.toAccountAddr = accountMap.get(txnParameters.toAccount)?.address;
+            const account = accountMap.get(txnParameters.toAccount);
+            if (!account) {
+                throw new Error(`Failed to find account ${txnParameters.toAccount} in the configuration.`);
+            }
+            txnParameters.toAccountAddr = account.address;
             delete txnParameters.toAccount;
         }
 
