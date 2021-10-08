@@ -1,11 +1,26 @@
 {
     "mode": 1,
-    "args": [
-        1,
-        1,
-        1,
-        2,
-        1
+    "appArgs": [
+        {
+            "type": "date",
+            "value": "2021-01-01"
+        }, 
+        {
+            "type": "date",
+            "value": "2021-01-01"
+        },
+        {
+            "type": "uint64",
+            "value": 7000000
+        },
+        {
+            "type": "address",
+            "value": "1234"
+        },
+        {
+            "type": "date",
+            "value": "2021-01-01"
+        }
     ],
     "transactionParams": {
         "type": 11,

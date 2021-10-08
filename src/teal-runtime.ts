@@ -92,7 +92,7 @@ export class TealRuntime {
         const runtime = new Runtime(accounts);
 
         if (txnParameters.sign === webTypes.SignType.LogicSignature) { 
-            const lsig = runtime.getLogicSig(tealCode, []);
+            const lsig = runtime.getLogicSig(tealCode, configuration.logSigArgs || []);
             const lsigAccount = runtime.getAccount(lsig.address());
             accountMap.set("$lsig", lsigAccount);
         }
@@ -101,7 +101,7 @@ export class TealRuntime {
         runtime.validateTxRound(gtxs);
 
         const store = (runtime as any).store; //TODO: This is a bit ugly. Need to make a change to algo-builder/runtime if we need to keep this.
-        runtime.ctx = new Ctx(cloneDeep(store), tx, gtxs, configuration.args || [], runtime, undefined);
+        runtime.ctx = new Ctx(cloneDeep(store), tx, gtxs, configuration.appArgs || [], runtime, undefined);
 
         runtime.ctx.tx = runtime.ctx.gtxs[0];
 
