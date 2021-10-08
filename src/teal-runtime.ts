@@ -5,7 +5,6 @@
 import { AccountStore, Interpreter, parser, Runtime, types } from "@algo-builder/runtime";
 import { types as webTypes } from "@algo-builder/web";
 import { Ctx } from "@algo-builder/runtime/build/ctx";
-import { ALGORAND_ACCOUNT_MIN_BALANCE } from "@algo-builder/runtime/build/lib/constants";
 import { readFile } from "./lib/file";
 import cloneDeep from "lodash.clonedeep";
 import { AppDeploymentFlags } from "@algo-builder/runtime/build/types";
@@ -18,19 +17,9 @@ export class TealRuntime {
     private loadedTealFilePath?: string = undefined;
 
     //
-    // Index of the next instruction to execute.
-    //
-    private nextInstructionIndex: number = 0;
-
-    //
     // The TEAL interpreter.
     //
     private interpreter = new Interpreter();
-
-    //
-    // Instructions parsed from the TEAL code.
-    //
-    instructions: types.Operator[] = [];
 
     //
     // Gets the file path for the currently loaded TEAL file.
@@ -43,8 +32,10 @@ export class TealRuntime {
     // Get the current line of the debugger.
     //
     getCurrentLine(): number | undefined { 
-        if (this.nextInstructionIndex >= 0 && this.nextInstructionIndex < this.instructions.length) {
-            return this.instructions[this.nextInstructionIndex].line - 1; // Convert from 1-based to 0-based.
+        if (this.interpreter && 
+            this.interpreter.instructionIndex >= 0 && 
+            this.interpreter.instructionIndex < this.interpreter.instructions.length) {
+            return this.interpreter.instructions[this.interpreter.instructionIndex].line - 1; // Convert from 1-based to 0-based.
         }
         else {
             return undefined;
@@ -66,7 +57,6 @@ export class TealRuntime {
     async start(tealFilePath: string): Promise<void> {
 
         this.loadedTealFilePath = tealFilePath;
-        this.nextInstructionIndex = 0;
 
         const tealCode = await readFile(tealFilePath);
         const configuration = await this.loadConfiguration(tealFilePath);
@@ -189,16 +179,16 @@ export class TealRuntime {
     // Returns true to continue or false to end debugging.
     //
     step(): boolean {
-        if (this.nextInstructionIndex > this.instructions.length - 1) {
+        if (!this.interpreter || this.interpreter.instructionIndex > this.interpreter.instructions.length - 1) {
             //
             // Don't step beyond the end.
             //
             return false;
         }
 
-        const instruction = this.instructions[this.nextInstructionIndex];
+        const instruction = this.interpreter.instructions[this.interpreter.instructionIndex];
         instruction.execute(this.interpreter!.stack);
-        this.nextInstructionIndex += 1;
+        this.interpreter.instructionIndex += 1;
         return true;
     }
 

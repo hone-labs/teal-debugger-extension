@@ -1,0 +1,16 @@
+{
+    "mode": 1,
+    "transactionParams": {
+        "type": 11,
+        "sign": 0,
+        "fromAccount": "john",
+        "payFlags": { 
+            "totalFee": 1000
+        }
+    },
+    "accounts": {
+        "john": {
+            "balance": 101500
+        }
+    }
+}

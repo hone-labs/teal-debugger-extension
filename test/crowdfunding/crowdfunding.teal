@@ -1,0 +1,51 @@
+#pragma version 4
+
+int 0
+bz failed
+
+//store the start date
+byte "StartDate"
+txna ApplicationArgs 0
+btoi
+app_global_put
+
+// store the end date
+byte "EndDate"
+txna ApplicationArgs 1
+btoi
+app_global_put
+
+// store fund goal
+byte "Goal"
+txna ApplicationArgs 2
+btoi
+app_global_put
+
+// store the fund receiver
+byte "Receiver"
+txna ApplicationArgs 3
+app_global_put
+
+// set the total raised to 0 and store it
+byte "Total"
+int 0
+app_global_put
+
+// store the fund close date
+byte "FundCloseDate"
+txna ApplicationArgs 4
+btoi
+app_global_put
+
+// return a success
+int 1
+return
+
+not_creation:
+int 1
+return
+
+// fail transaction
+failed:
+int 0
+return
