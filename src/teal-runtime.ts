@@ -101,7 +101,7 @@ export class TealRuntime {
         runtime.validateTxRound(gtxs);
 
         const store = (runtime as any).store; //TODO: This is a bit ugly. Need to make a change to algo-builder/runtime if we need to keep this.
-        runtime.ctx = new Ctx(cloneDeep(store), tx, gtxs, [], runtime, undefined);
+        runtime.ctx = new Ctx(cloneDeep(store), tx, gtxs, configuration.args || [], runtime, undefined);
 
         runtime.ctx.tx = runtime.ctx.gtxs[0];
 

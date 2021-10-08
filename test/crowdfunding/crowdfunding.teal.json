@@ -1,5 +1,12 @@
 {
     "mode": 1,
+    "args": [
+        1,
+        1,
+        1,
+        2,
+        1
+    ],
     "transactionParams": {
         "type": 11,
         "sign": 0,
