@@ -8,6 +8,7 @@ import { Ctx } from "@algo-builder/runtime/build/ctx";
 import { ALGORAND_ACCOUNT_MIN_BALANCE } from "@algo-builder/runtime/build/lib/constants";
 import { readFile } from "./lib/file";
 import cloneDeep from "lodash.clonedeep";
+import { AppDeploymentFlags } from "@algo-builder/runtime/build/types";
 
 export class TealRuntime {
 
@@ -74,16 +75,11 @@ export class TealRuntime {
         let accounts: AccountStore[] = [];
         for (let accountName of Object.keys(configuration.accounts)) {
             const accountData = configuration.accounts[accountName];
-            const account = new AccountStore(accountData.balance, accountData);
+            const account = new AccountStore(accountData.balance, this.createAccountConfig(accountData));            
             accountMap.set(accountName, account);
             accounts.push(account);
         }
         
-        const runtime = new Runtime(accounts);
-        const lsig = runtime.getLogicSig(tealCode, []);
-        const lsigAccount = runtime.getAccount(lsig.address());
-        accountMap.set("$lsig", lsigAccount);
-
         const txnParameters: any = configuration.transactionParams;
         if (txnParameters.fromAccount) {
             const account = accountMap.get(txnParameters.fromAccount);
@@ -103,15 +99,63 @@ export class TealRuntime {
             delete txnParameters.toAccount;
         }
 
+        const runtime = new Runtime(accounts);
+
+        if (txnParameters.sign === webTypes.SignType.LogicSignature) { 
+            const lsig = runtime.getLogicSig(tealCode, []);
+            const lsigAccount = runtime.getAccount(lsig.address());
+            accountMap.set("$lsig", lsigAccount);
+        }
+
         const [tx, gtxs] = runtime.createTxnContext([txnParameters]);
+        runtime.validateTxRound(gtxs);
 
         const store = (runtime as any).store; //TODO: This is a bit ugly. Need to make a change to algo-builder/runtime if we need to keep this.
         runtime.ctx = new Ctx(cloneDeep(store), tx, gtxs, [], runtime, undefined);
 
+        runtime.ctx.tx = runtime.ctx.gtxs[0];
+
+        runtime.ctx.verifyMinimumFees();
+
+        runtime.ctx.deductFee(txnParameters.fromAccountAddr, 0, txnParameters.payFlags);
+
+        if (txnParameters.type === webTypes.TransactionType.DeployApp) {
+            const senderAcc = runtime.ctx.getAccount(txnParameters.fromAccountAddr);
+            const flags: AppDeploymentFlags = {
+                sender: senderAcc.account,
+                localInts: txnParameters.localInts,
+                localBytes: txnParameters.localBytes,
+                globalInts: txnParameters.globalInts,
+                globalBytes: txnParameters.globalBytes
+            };        
+    
+            //
+            // Create app with id = 0 in globalApps for teal execution
+            //
+            const app = senderAcc.addApp(0, flags, tealCode, "");
+            (runtime.ctx as any).assertAccBalAboveMin(senderAcc.address); //TODO: Do I need official access to this function?
+            runtime.ctx.state.accounts.set(senderAcc.address, senderAcc);
+            runtime.ctx.state.globalApps.set(app.id, senderAcc.address);
+        }                 
+
         this.interpreter = new Interpreter();
         this.interpreter.runtime = runtime;
-        this.instructions = parser(tealCode, types.ExecutionMode.SIGNATURE, this.interpreter);
+        this.interpreter.instructions = parser(tealCode, configuration.mode, this.interpreter);
         this.interpreter.mapLabelWithIndexes();
+    }
+
+    //
+    // Helper function to create an account "configuration" for Algo-builder/runtime.
+    //
+    private createAccountConfig(accountData: any): any | undefined {
+        if (!accountData.addr && !accountData.sk) {
+            return undefined; // No configuration, just let Algo-builder/runtime generate address/sk.
+        }
+
+        return {
+            addr: accountData,
+            sk: accountData.sk,
+        };
     }
 
     //
