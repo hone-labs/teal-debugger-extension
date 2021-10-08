@@ -2,6 +2,7 @@
 // Provides TEAL debugging capabilities to VS Code.
 //
 
+import * as vscode from 'vscode';
 import { LoggingDebugSession, Scope, Source, StackFrame, StoppedEvent, TerminatedEvent, Thread } from 'vscode-debugadapter';
 import { DebugProtocol } from 'vscode-debugprotocol';
 import { TealRuntime } from './teal-runtime';
@@ -63,27 +64,43 @@ export class TealDebugAdaptor extends LoggingDebugSession {
         console.log(`Launch request:`);
         console.log(args);
 
-        await this.tealRuntime.start(args.program);
-
-        if (args.stopOnEntry) {
-            //
-            // Tells VS Code that we have stopped on entry.
-            // https://microsoft.github.io/debug-adapter-protocol/specification#Events_Stopped
-            //
-            this.sendEvent(new StoppedEvent('entry', THREAD_ID));
+        try {
+            await this.tealRuntime.start(args.program);
+    
+            if (args.stopOnEntry) {
+                //
+                // Tells VS Code that we have stopped on entry.
+                // https://microsoft.github.io/debug-adapter-protocol/specification#Events_Stopped
+                //
+                this.sendEvent(new StoppedEvent('entry', THREAD_ID));
+            }
+            else {
+                this.tealRuntime.continue();
+    
+                //
+                // Debugging session has ended.
+                //
+                // https://microsoft.github.io/debug-adapter-protocol/specification#Events_Terminated
+                //
+                this.sendEvent(new TerminatedEvent());
+            }
+    
+            this.sendResponse(response);
         }
-        else {
-            this.tealRuntime.continue();
+        catch (err: any) {    
+            console.error(`An error occured starting the TEAL debugger:`);
+            console.error(err && err.stack || err);
 
-            //
-            // Debugging session has ended.
-            //
-            // https://microsoft.github.io/debug-adapter-protocol/specification#Events_Terminated
-            //
-            this.sendEvent(new TerminatedEvent());
+            const msg = err.message || err.toString();
+
+            this.sendErrorResponse(response, {
+                id: 1001,
+                format: msg,
+                showUser: false
+            });
+
+            await vscode.window.showErrorMessage(msg);
         }
-
-        this.sendResponse(response);
 	}
 
     // 
