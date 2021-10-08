@@ -11,14 +11,9 @@ export async function readFile(path: string): Promise<string> {
         return contents;
     } 
     catch (err) {
-        try {
-            const uri = vscode.Uri.parse(path);
-            const bytes = await vscode.workspace.fs.readFile(uri);
-            const contents = Buffer.from(bytes).toString('utf8');
-            return contents;
-        } 
-        catch (err) {
-            return `cannot read '${path}'`;
-        }
+        const uri = vscode.Uri.parse(path);
+        const bytes = await vscode.workspace.fs.readFile(uri);
+        const contents = Buffer.from(bytes).toString('utf8');
+        return contents;
     }
 }
