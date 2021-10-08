@@ -1,6 +1,23 @@
 #pragma version 4
 
+// check if the app is being created
+// if so save creator
 int 0
+txn ApplicationID
+==
+
+// if not creation skip this section
+bz not_creation
+
+// save the creator address to the global state
+byte "Creator"
+txn Sender
+app_global_put
+
+// verify that 5 arguments are passed
+txn NumAppArgs
+int 5
+==
 bz failed
 
 //store the start date
