@@ -68,7 +68,7 @@ export class TealRuntime {
         this.nextInstructionIndex = 0;
 
         const tealCode = await readFile(tealFilePath);
-        const configuration = JSON.parse(await readFile(tealFilePath + ".json"));
+        const configuration = await this.loadConfiguration(tealFilePath);
 
         let accountMap = new Map<string, AccountStore>();
         let accounts: AccountStore[] = [];
@@ -104,6 +104,23 @@ export class TealRuntime {
         this.interpreter.runtime = runtime;
         this.instructions = parser(tealCode, types.ExecutionMode.SIGNATURE, this.interpreter);
         this.interpreter.mapLabelWithIndexes();
+    }
+
+    //
+    // Loads the TEAL debugger configuration file.
+    //
+    private async loadConfiguration(tealFilePath: string) {
+        const configFilePath = tealFilePath + ".json";
+        try {
+            return JSON.parse(await readFile(configFilePath));
+        }
+        catch (err: any) {
+            const msg = `Failed to load TEAL debugger configuration file: ${configFilePath}`;
+            console.error(msg);
+            console.error(err && err.stack || err);
+
+            throw new Error(msg);
+        }
     }
 
     //
