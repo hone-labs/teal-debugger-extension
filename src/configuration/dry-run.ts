@@ -198,17 +198,7 @@ export interface Transaction {
 
     /*** ExtraProgramPages: Number of additional pages allocated to the application's approval and clear state programs. Each ExtraProgramPages is 2048 bytes. The sum of ApprovalProgram and ClearStateProgram may not exceed 2048*(1+ExtraProgramPages) bytes. */
     apep: number;
-
-    //TODO: Where do these come from?
-    CertRound: number;
-    CertType: number;
-    Cert: Cert;
 }
-
-//fio:
-// export interface MicroAlgos {
-//     Raw: number;
-// }
 
 /**
  * https://developer.algorand.org/docs/get-details/transactions/transactions/#asset-parameters
