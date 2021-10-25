@@ -21,7 +21,7 @@ export interface DryRunSchema {
 }
 
 export interface SignedTxn {
-    xxn: Transaction;
+    txn: Transaction;
 }
 
 /**
