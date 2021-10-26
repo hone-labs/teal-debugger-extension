@@ -61,15 +61,22 @@ export class TealRuntime {
         const tealCode = await readFile(tealFilePath);
         const configuration = await this.loadConfiguration(tealFilePath);
 
+        this.configureInterpreter(configuration, tealCode);
+    }
+
+    //
+    // Configures the algo-builder interpreter and parses the TEAL code to be debugged.
+    //
+    private configureInterpreter(configuration: any, tealCode: string) {
         let accountMap = new Map<string, AccountStore>();
         let accounts: AccountStore[] = [];
         for (let accountName of Object.keys(configuration.accounts)) {
             const accountData = configuration.accounts[accountName];
-            const account = new AccountStore(accountData.balance, this.createAccountConfig(accountData));            
+            const account = new AccountStore(accountData.balance, this.createAccountConfig(accountData));
             accountMap.set(accountName, account);
             accounts.push(account);
         }
-        
+
         const txnParameters: any = configuration.transactionParams;
         if (txnParameters.fromAccount) {
             const account = accountMap.get(txnParameters.fromAccount);
@@ -91,7 +98,7 @@ export class TealRuntime {
 
         const runtime = new Runtime(accounts);
 
-        if (txnParameters.sign === webTypes.SignType.LogicSignature) { 
+        if (txnParameters.sign === webTypes.SignType.LogicSignature) {
             const lsig = runtime.getLogicSig(tealCode, configuration.logSigArgs || []);
             const lsigAccount = runtime.getAccount(lsig.address());
             accountMap.set("$lsig", lsigAccount);
@@ -117,8 +124,8 @@ export class TealRuntime {
                 localBytes: txnParameters.localBytes,
                 globalInts: txnParameters.globalInts,
                 globalBytes: txnParameters.globalBytes
-            };        
-    
+            };
+
             //
             // Create app with id = 0 in globalApps for teal execution
             //
@@ -126,7 +133,7 @@ export class TealRuntime {
             (runtime.ctx as any).assertAccBalAboveMin(senderAcc.address); //TODO: Do I need official access to this function?
             runtime.ctx.state.accounts.set(senderAcc.address, senderAcc);
             runtime.ctx.state.globalApps.set(app.id, senderAcc.address);
-        }                 
+        }
 
         this.interpreter = new Interpreter();
         this.interpreter.runtime = runtime;
