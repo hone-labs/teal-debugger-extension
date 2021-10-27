@@ -35,7 +35,7 @@
     ],
     "accounts": {
         "john": {
-            "balance": 300000
+            "balance": 3000000
         }
     }
 }
