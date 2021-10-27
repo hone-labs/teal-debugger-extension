@@ -1,38 +1,41 @@
 {
-    "mode": 1,
-    "appArgs": [
+    "mode": "signature", // or application
+    "groupIndex": 0, // which txn to use defaults to 0
+    "args": [
         {
-            "type": "date",
-            "value": "2021-01-01"
+            "type": "int",
+            "value": 1635309873905 // Begin date.
         }, 
         {
-            "type": "date",
-            "value": "2021-01-01"
+            "type": "int",
+            "value": 1635321871906 // End date.
         },
         {
-            "type": "uint64",
-            "value": 7000000
+            "type": "addr",
+            "value": "john"
         },
         {
-            "type": "address",
-            "value": "1234"
-        },
-        {
-            "type": "date",
-            "value": "2021-01-01"
+            "type": "int",
+            "value": 1635321871906 // Fund close date.
         }
     ],
-    "transactionParams": {
-        "type": 11,
-        "sign": 0,
-        "fromAccount": "john",
-        "payFlags": { 
-            "totalFee": 1000
+    "txns": [
+        {
+            "type": "appl",
+            "sign": "secretkey",
+            "fromAccount": "john",
+            "payFlags": { 
+                "totalFee": 1000
+            },
+            "localInts": 8,
+            "localBytes": 8,
+            "globalInts": 32,
+            "globalBytes": 32
         }
-    },
+    ],
     "accounts": {
         "john": {
-            "balance": 101500
+            "balance": 300000
         }
     }
 }
