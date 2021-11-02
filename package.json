@@ -103,8 +103,8 @@
         "webpack-cli": "^4.8.0"
     },
     "dependencies": {
-        "@algo-builder/runtime": "^2.0.0",
         "json5": "^2.2.0",
+        "teal-interpreter": "0.0.2",
         "vscode-debugadapter": "^1.49.0",
         "vscode-debugprotocol": "^1.49.0",
         "yaml": "^1.10.2"
