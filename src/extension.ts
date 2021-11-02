@@ -38,7 +38,8 @@ export function deactivate() {}
 
 class DebugAdapterFactory implements vscode.DebugAdapterDescriptorFactory {
 	createDebugAdapterDescriptor(_session: vscode.DebugSession): vscode.ProviderResult<vscode.DebugAdapterDescriptor> {
-		return new vscode.DebugAdapterInlineImplementation(logCalls(new TealDebugAdaptor()));
+		//return new vscode.DebugAdapterInlineImplementation(logCalls(new TealDebugAdaptor()));
+        return new vscode.DebugAdapterInlineImplementation(new TealDebugAdaptor());
 	}
 }
 
