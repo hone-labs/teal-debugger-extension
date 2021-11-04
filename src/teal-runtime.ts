@@ -5,6 +5,7 @@
 import { readFile } from "./lib/file";
 import JSON5 from "json5";
 import { StackEntry, TealInterpreter } from "teal-interpreter";
+import { ITealInterpreterConfig } from "teal-interpreter/build/lib/interpreter";
 
 export class TealRuntime {
 
@@ -60,16 +61,15 @@ export class TealRuntime {
     //
     // Configures the algo-builder interpreter and parses the TEAL code to be debugged.
     //
-    private configureInterpreter(configuration: any, tealCode: string) {
+    private configureInterpreter(configuration: ITealInterpreterConfig, tealCode: string) {
         this.interpreter = new TealInterpreter();
-        this.interpreter.load(tealCode);
+        this.interpreter.load(tealCode, configuration);
     }
-
 
     //
     // Loads the TEAL debugger configuration file.
     //
-    private async loadConfiguration(tealFilePath: string) {
+    private async loadConfiguration(tealFilePath: string): Promise<ITealInterpreterConfig> {
         const configFilePath = tealFilePath + ".json";
         try {
             return JSON5.parse(await readFile(configFilePath));
