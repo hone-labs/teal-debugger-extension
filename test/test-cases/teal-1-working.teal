@@ -1,0 +1,98 @@
+global MinTxnFee
+global MinBalance
+global MaxTxnLife
+global ZeroAddress
+byte 0x1234
+byte base64 aGVsbG8gd29ybGQh
+byte base64(aGVsbG8gd29ybGQh)
+addr RWXCBB73XJITATVQFOI7MVUUQOL2PFDDSDUMW4H4T2SNSX4SEUOQ2MM7F4
+txn Sender
+txn Fee
+txn FirstValid
+txn LastValid
+txn Note
+txn Receiver
+txn Amount
+txn CloseRemainderTo
+txn VotePK
+txn SelectionPK
+txn VoteFirst
+txn VoteLast
+txn VoteKeyDilution
+txn Type
+txn XferAsset
+txn AssetAmount
+txn AssetSender
+txn AssetReceiver
+txn AssetCloseTo
+gtxn 0 Sender
+gtxn 0 Fee
+gtxn 0 FirstValid
+gtxn 0 LastValid
+gtxn 0 Note
+gtxn 0 Receiver
+gtxn 0 Amount
+gtxn 0 CloseRemainderTo
+gtxn 0 VotePK
+gtxn 0 SelectionPK
+gtxn 0 VoteFirst
+gtxn 0 VoteLast
+gtxn 0 VoteKeyDilution
+gtxn 0 Type
+gtxn 0 XferAsset
+gtxn 0 AssetAmount
+gtxn 0 AssetSender
+gtxn 0 AssetReceiver
+gtxn 0 AssetCloseTo
+arg 0 // comment
+arg 1 //comment
+sha256
+keccak256
+int 0x031337
+int 0x1234567812345678
+int 0x0034567812345678
+int 0x0000567812345678
+int 0x0000007812345678
++ // comment
+// extra int pushes to satisfy typechecking on the ops that pop two ints
+intc 0
+- //comment
+intc 2
+/
+intc_0
+*
+intc_1
+<
+intc_2
+>
+intc_3
+<=
+intc 1
+>=
+intc 1
+&&
+intc 1
+||
+intc 1
+==
+intc 1
+!=
+intc 1
+!
+%
+^
+~
+byte 0x4242
+itob
+len
+bnz there
+bytec 1
+sha512_256
+dup
+there:
+pop
+load 3
+store 2
+intc 0
+intc 1
+err

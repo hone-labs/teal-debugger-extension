@@ -4,7 +4,7 @@
 
 import { readFile } from "./lib/file";
 import JSON5 from "json5";
-import { StackEntry, TealInterpreter } from "teal-interpreter";
+import { TealInterpreter, ValueType } from "teal-interpreter";
 import { ITealInterpreterConfig } from "teal-interpreter/build/lib/interpreter";
 
 export class TealRuntime {
@@ -41,7 +41,7 @@ export class TealRuntime {
     //
     // Get the contents of the data stack.
     //
-    getDataStack(): StackEntry[] {
+    getDataStack(): ValueType[] {
         return this.interpreter.context.stack;
     }
 
