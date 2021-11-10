@@ -225,25 +225,41 @@ export class TealDebugAdaptor extends LoggingDebugSession {
     //
 	protected nextRequest(response: DebugProtocol.NextResponse, args: DebugProtocol.NextArguments): void {
 
-        if (this.tealRuntime.step()) {
-            //
-            // Debugging can continue.
-            //
-            // Tells VS Code that we have stopped ater a step.
-            // https://microsoft.github.io/debug-adapter-protocol/specification#Events_Stopped
-            //
-            this.sendEvent(new StoppedEvent('step', THREAD_ID));
+        try {
+            if (this.tealRuntime.step()) {
+                //
+                // Debugging can continue.
+                //
+                // Tells VS Code that we have stopped ater a step.
+                // https://microsoft.github.io/debug-adapter-protocol/specification#Events_Stopped
+                //
+                this.sendEvent(new StoppedEvent('step', THREAD_ID));
+            }
+            else {
+                //
+                // Debugging session has ended.
+                //
+                // https://microsoft.github.io/debug-adapter-protocol/specification#Events_Terminated
+                //
+                this.sendEvent(new TerminatedEvent());
+            }
+    
+            this.sendResponse(response);
         }
-        else {
-            //
-            // Debugging session has ended.
-            //
-            // https://microsoft.github.io/debug-adapter-protocol/specification#Events_Terminated
-            //
-            this.sendEvent(new TerminatedEvent());
-        }
+        catch (err: any) {    
+            console.error(`An error occured stepping the TEAL debugger:`);
+            console.error(err && err.stack || err);
 
-        this.sendResponse(response);
+            const msg = err.message || err.toString();
+
+            this.sendErrorResponse(response, {
+                id: 1001,
+                format: msg,
+                showUser: false
+            });
+
+            vscode.window.showErrorMessage(msg);
+        }
 	}
 }
 
