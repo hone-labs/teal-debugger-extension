@@ -62,6 +62,34 @@ int 0x0034567812345678
 int 0x0000567812345678
 int 0x0000007812345678
 + // comment
+// extra int pushes to satisfy typechecking on the ops that pop two ints
+intcblock 1 2 3 4 5
+intc 0
+- //comment
+intc 2
+/
+intc_0
+*
+intc_1
+<
+intc_2
+>
+intc_3
+<=
+intc 1
+>=
+intc 1
+&&
+intc 1
+||
+intc 1
+==
+intc 1
+!=
+intc 1
+!
+int 6
+int 2
 %
 ^
 ~
