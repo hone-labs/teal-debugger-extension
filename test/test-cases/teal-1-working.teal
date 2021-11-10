@@ -54,6 +54,8 @@ arg 0 // comment
 arg 1 //comment
 byte base64 PTCXU4VI6ZFC/ds7MfVarmM/rvJJkwgSlKp+BgiEOWI=
 sha256
+byte 0x666E6F7264
+keccak256
 int 0x031337
 int 0x1234567812345678
 int 0x0034567812345678
@@ -68,10 +70,11 @@ btoi
 itob
 len
 bnz there
+int 3
+there:
 bytec 1
 sha512_256
 dup
-there:
 pop
 load 3
 store 2
