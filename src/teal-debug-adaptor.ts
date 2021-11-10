@@ -185,7 +185,7 @@ export class TealDebugAdaptor extends LoggingDebugSession {
                 variables: this.tealRuntime.getDataStack().map((value, index): DebugProtocol.Variable => {
                     return {
                         name: `[${index}]`,
-                        value: value.toString(),
+                        value: `${value.value.toString()} (${value.type})`,
                         variablesReference: 0, // This can be used to indicate the variable has sub-variables.
                     };
                 }),

@@ -1,13 +1,7 @@
 {
     "args": [
-        {
-            "type": "int",
-            "value": 20
-        },
-        {
-            "type": "int",
-            "value": 21
-        }
+        20,
+        21
     ],
     "globals": {
         "MinTxnFee": 1,
