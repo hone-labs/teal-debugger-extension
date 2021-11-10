@@ -52,6 +52,8 @@ gtxn 0 AssetReceiver
 gtxn 0 AssetCloseTo
 arg 0 // comment
 arg 1 //comment
+byte base64 PTCXU4VI6ZFC/ds7MfVarmM/rvJJkwgSlKp+BgiEOWI=
+sha256
 int 0x031337
 int 0x1234567812345678
 int 0x0034567812345678
