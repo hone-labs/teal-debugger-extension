@@ -104,7 +104,7 @@
     },
     "dependencies": {
         "json5": "^2.2.0",
-        "teal-interpreter": "0.0.5",
+        "teal-interpreter": "0.0.6",
         "vscode-debugadapter": "^1.49.0",
         "vscode-debugprotocol": "^1.49.0",
         "yaml": "^1.10.2"
