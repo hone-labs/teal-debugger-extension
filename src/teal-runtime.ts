@@ -4,8 +4,7 @@
 
 import { readFile } from "./lib/file";
 import JSON5 from "json5";
-import { TealInterpreter } from "teal-interpreter";
-import { ITealInterpreterConfig } from "teal-interpreter/build/lib/interpreter";
+import { ITealInterpreterConfig, TealInterpreter } from "teal-interpreter";
 import { ITypedValue } from "teal-interpreter/build/lib/context";
 
 export class TealRuntime {
