@@ -1,0 +1,57 @@
+{
+    "txn": {
+        "Accounts": [
+            "addr:7JOPVEP3ABJUW5YZ5WFIONLPWTZ5MYX5HFK4K7JLGSIAG7RRB42MNLQ224"
+        ],
+        "ApplicationID": 5
+    },
+    "txns": [
+        {
+            "ApplicationArgs": [
+                "addr:7JOPVEP3ABJUW5YZ5WFIONLPWTZ5MYX5HFK4K7JLGSIAG7RRB42MNLQ224"
+            ]
+        }
+    ],
+    "application": {
+        "globals": {
+            "aGlobal": 38
+        }
+    },
+    "applications": {
+        "2": {
+            "globals": {
+                "anotherGlobal": 22
+            }
+        }
+    },
+    "assets": {
+        "0": {
+            "fields": {
+                "AssetTotal": 5
+            }
+        }
+    },
+    "accounts": {
+        "7JOPVEP3ABJUW5YZ5WFIONLPWTZ5MYX5HFK4K7JLGSIAG7RRB42MNLQ224": {
+            "balance": 42,
+            "locals": {
+                "aLocal": 33
+            },
+            "applications": {
+                "1": {
+                    "optedIn": true,
+                    "locals": {
+                        "test": 53
+                    }
+                }
+            },
+            "assets": {
+                "1": {
+                    "fields": {
+                        "AssetBalance": 3000
+                    }
+                }
+            }
+        }
+    }    
+}

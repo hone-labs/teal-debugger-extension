@@ -1,0 +1,75 @@
+int 1
+int 2
+dup2
+pop
+pop
+pop
+pop
+byte "1234"
+byte "5678"
+concat
+substring 2 7
+int 1
+int 3
+substring3
+pop
+int 0
+bz there2
+b there2
+there2:
+addr 7JOPVEP3ABJUW5YZ5WFIONLPWTZ5MYX5HFK4K7JLGSIAG7RRB42MNLQ224
+balance
+pop
+addr 7JOPVEP3ABJUW5YZ5WFIONLPWTZ5MYX5HFK4K7JLGSIAG7RRB42MNLQ224
+int 1
+app_opted_in
+addr 7JOPVEP3ABJUW5YZ5WFIONLPWTZ5MYX5HFK4K7JLGSIAG7RRB42MNLQ224
+int 1
+byte "test"
+app_local_get_ex
+pop
+pop
+pop
+addr 7JOPVEP3ABJUW5YZ5WFIONLPWTZ5MYX5HFK4K7JLGSIAG7RRB42MNLQ224
+byte "aLocal"
+app_local_get
+pop
+byte "aGlobal"
+app_global_get
+pop
+int 2
+byte "anotherGlobal"
+app_global_get_ex
+pop
+pop
+addr 7JOPVEP3ABJUW5YZ5WFIONLPWTZ5MYX5HFK4K7JLGSIAG7RRB42MNLQ224
+byte "aLocal"
+int 15
+app_local_put
+byte "aGlobal"
+int 12
+app_global_put
+addr 7JOPVEP3ABJUW5YZ5WFIONLPWTZ5MYX5HFK4K7JLGSIAG7RRB42MNLQ224
+byte "aLocal"
+app_local_del
+byte "aGlobal"
+app_global_del
+addr 7JOPVEP3ABJUW5YZ5WFIONLPWTZ5MYX5HFK4K7JLGSIAG7RRB42MNLQ224
+int 1
+asset_holding_get AssetBalance
+pop
+pop
+int 0
+asset_params_get AssetTotal
+pop
+pop
+txna Accounts 0
+pop
+gtxna 0 ApplicationArgs 0
+pop
+txn ApplicationID
+pop
+int 0
+int 1
+addw
+return

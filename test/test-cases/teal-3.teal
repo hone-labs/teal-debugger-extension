@@ -1,0 +1,41 @@
+int 1
+assert
+addr 7JOPVEP3ABJUW5YZ5WFIONLPWTZ5MYX5HFK4K7JLGSIAG7RRB42MNLQ224
+min_balance
+pop
+int 0x031337			// get bit 1, negate it, put it back
+dup
+int 1
+getbit
+!
+int 1
+setbit
+pop
+byte "test"			// get byte 2, increment it, put it back
+dup
+int 2
+getbyte
+int 1
++
+int 2
+setbyte
+int 3
+swap
+int 1
+select
+pop
+int 10
+int 11
+int 12
+dig 2
+pop
+pop
+pop
+pop
+int 1
+gtxns ConfigAsset
+pop
+int 2
+gtxnsa Accounts 0
+pushint 1000
+pushbytes "john"

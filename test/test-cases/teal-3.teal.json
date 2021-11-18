@@ -1,0 +1,20 @@
+{
+    "txns": [
+        {
+
+        },
+        {
+            "ConfigAsset": 5
+        },
+        {
+            "Accounts": [
+                "addr:7JOPVEP3ABJUW5YZ5WFIONLPWTZ5MYX5HFK4K7JLGSIAG7RRB42MNLQ224"
+            ]            
+        }
+    ],
+    "accounts": {
+        "7JOPVEP3ABJUW5YZ5WFIONLPWTZ5MYX5HFK4K7JLGSIAG7RRB42MNLQ224": {
+            "minBalance": 5000
+        }
+    }
+}
