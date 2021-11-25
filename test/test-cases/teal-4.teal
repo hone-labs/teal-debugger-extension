@@ -1,0 +1,25 @@
+callsub stuff
+b next
+stuff:
+retsub
+next:
+int 1
+int 2
+shl
+int 1
+shr
+pop
+int 4
+sqrt
+int 2
+exp
+int 2
+expw
+pop
+pop
+gload 0 0
+gloads 0
+pop
+gaid 0
+gaids
+pop
