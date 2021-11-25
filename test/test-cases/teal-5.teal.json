@@ -1,0 +1,26 @@
+{
+    "args": [
+        22
+    ],
+    "appParams": {
+        "2": {
+            "AppExtraProgramPages": 5
+        }
+    },
+    "txn": {
+        "ApplicationArgs": [
+            1,
+            2,
+            3
+        ]
+    },
+    "gtxn": [
+        {
+            "ApplicationArgs": [
+                4,
+                5,
+                6
+            ]
+        }
+    ]
+}

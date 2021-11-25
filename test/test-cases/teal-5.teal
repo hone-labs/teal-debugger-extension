@@ -1,0 +1,16 @@
+int 2
+app_params_get AppExtraProgramPages
+byte 0x0123456789abcd
+int 1
+txnas ApplicationArgs
+int 0
+gtxnas 0 ApplicationArgs
+int 0
+int 0
+gtxnsas ApplicationArgs
+int 0
+args
+int 0
+loads
+int 0
+stores
