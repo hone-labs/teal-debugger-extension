@@ -1,0 +1,27 @@
+#pragma version 3
+
+byte "Creator"
+txn Sender
+app_global_put
+
+addr 7JOPVEP3ABJUW5YZ5WFIONLPWTZ5MYX5HFK4K7JLGSIAG7RRB42MNLQ224
+byte "Creator"
+app_global_get
+==
+bnz check_balance
+
+failure:
+int 0
+return
+
+check_balance:
+txn Sender
+balance
+// Not sure how to set the balance for accounts that are on txns (Sender, Receiver etc.) in the config
+
+
+success:
+int 1
+return
+
+

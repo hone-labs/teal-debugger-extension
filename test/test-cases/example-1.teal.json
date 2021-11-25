@@ -1,0 +1,67 @@
+{
+    "args": [
+        {
+            "type": "int",
+            "value": 20
+        },
+        {
+            "type": "int",
+            "value": 21
+        }
+    ],
+    "globals": {
+        "MinTxnFee": 1,
+        "MinBalance": 2,
+        "MaxTxnLife": 3,
+        "ZeroAddress": 4
+    },
+    "txn": {
+        "Sender": "addr:7JOPVEP3ABJUW5YZ5WFIONLPWTZ5MYX5HFK4K7JLGSIAG7RRB42MNLQ224",
+        "Fee": 6,
+        "FirstValid": 7,
+        "LastValid": 8,
+        "Note": 9,
+        "Receiver": 10,
+        "Amount": 11,
+        "CloseRemainderTo": 12,
+        "VotePK": 13,
+        "SelectionPK": 14,
+        "VoteFirst": 15,
+        "VoteLast": 16,
+        "VoteKeyDilution": 17,
+        "Type": 18,
+        "XferAsset": 19,
+        "AssetAmount": 20,
+        "AssetSender": 21,
+        "AssetReceiver": 22,
+        "AssetCloseTo": 23
+    },
+    "txns": [
+        {
+            "Sender": "addr:7JOPVEP3ABJUW5YZ5WFIONLPWTZ5MYX5HFK4K7JLGSIAG7RRB42MNLQ224",
+            "Fee": 6,
+            "FirstValid": 7,
+            "LastValid": 8,
+            "Note": 9,
+            "Receiver": 10,
+            "Amount": 11,
+            "CloseRemainderTo": 12,
+            "VotePK": 13,
+            "SelectionPK": 14,
+            "VoteFirst": 15,
+            "VoteLast": 16,
+            "VoteKeyDilution": 17,
+            "Type": 18,
+            "XferAsset": 19,
+            "AssetAmount": 20,
+            "AssetSender": 21,
+            "AssetReceiver": 22,
+            "AssetCloseTo": 23
+        }
+    ],
+    "accounts": {
+        "7JOPVEP3ABJUW5YZ5WFIONLPWTZ5MYX5HFK4K7JLGSIAG7RRB42MNLQ224": {
+            "balance": 5000
+        }
+    }
+}
