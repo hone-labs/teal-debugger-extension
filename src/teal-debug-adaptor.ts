@@ -8,6 +8,14 @@ import { DebugProtocol } from 'vscode-debugprotocol';
 import { TealRuntime } from './teal-runtime';
 import * as path from "path";
 
+//
+// Distinguishes the different types of variables that can be displayed in the debugger.
+//
+enum VariableTypes {
+    DataStack = 1,
+    GlobalState = 1000,
+};
+
 /**
  * This interface describes the specific launch attributes.
  * (which are not part of the Debug Adapter Protocol).
@@ -158,7 +166,8 @@ export class TealDebugAdaptor extends LoggingDebugSession {
 
 		response.body = {
 			scopes: [
-                new Scope("Data stack", 1, false),
+                new Scope("Data stack", VariableTypes.DataStack, false),
+                new Scope("Global state", VariableTypes.GlobalState, false),
 			],
 		};
 		this.sendResponse(response);
@@ -171,18 +180,54 @@ export class TealDebugAdaptor extends LoggingDebugSession {
     //
 	protected async variablesRequest(response: DebugProtocol.VariablesResponse, args: DebugProtocol.VariablesArguments, request?: DebugProtocol.Request): Promise<void> {
 
-        if (args.variablesReference === 1) {
+        const context = this.tealRuntime.getContext();
 
+        if (args.variablesReference > VariableTypes.GlobalState) {
+            //
+            // Global state variables request.
+            //
+            const appGlobals = context.appGlobals;
+            const appIds = Object.keys(appGlobals);
+            const appIdIndex = args.variablesReference - VariableTypes.GlobalState - 1;
+            const appId = appIds[appIdIndex];
+            const valueTable = context.appGlobals[appId];
+            const valueKeys = Object.keys(valueTable);
+            response.body = {
+                variables: valueKeys.map((key, index): DebugProtocol.Variable => {
+                    const value = valueTable[key];
+                    return {
+                        name: key,
+                        value: `${value.value.toString()} (${value.type})`,
+                        variablesReference: 0,
+                    };
+                }),
+            };
+        }
+        else if (args.variablesReference === VariableTypes.GlobalState) {
+            //
+            // Global state variables request.
+            //
+            const appGlobals = context.appGlobals;
+            const appIds = Object.keys(appGlobals);
+            response.body = {
+                variables: appIds.map((appId, index): DebugProtocol.Variable => {
+                    return {
+                        name: `[${appId}]`,
+                        value: "{...}",
+                        variablesReference: VariableTypes.GlobalState + 1 + index,
+                    };
+                }),
+            };
+        }
+        else if (args.variablesReference === VariableTypes.DataStack) {
             //
             // Data stack variables request.
             //
             response.body = {
                 //
-                // TODO: Return a variable for each stack entry.
-                //
                 // https://microsoft.github.io/debug-adapter-protocol/specification#Types_Variable
                 //
-                variables: this.tealRuntime.getDataStack().map((value, index): DebugProtocol.Variable => {
+                variables: context.stack.map((value, index): DebugProtocol.Variable => {
                     return {
                         name: `[${index}]`,
                         value: `${value.value.toString()} (${value.type})`,
@@ -190,11 +235,6 @@ export class TealDebugAdaptor extends LoggingDebugSession {
                     };
                 }),
             };
-        }
-        else {
-            //
-            // TODO: Add support for scratch, local and global variables.
-            //
         }
 
 		this.sendResponse(response);

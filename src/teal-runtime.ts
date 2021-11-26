@@ -5,7 +5,7 @@
 import { readFile } from "./lib/file";
 import JSON5 from "json5";
 import { ITealInterpreterConfig, TealInterpreter } from "teal-interpreter";
-import { ITypedValue } from "teal-interpreter/build/lib/context";
+import { IExecutionContext, ITypedValue } from "teal-interpreter/build/lib/context";
 
 export class TealRuntime {
 
@@ -39,10 +39,10 @@ export class TealRuntime {
     }
 
     //
-    // Get the contents of the data stack.
+    // Get the execution context of the interpreter.
     //
-    getDataStack(): ITypedValue[] {
-        return this.interpreter.context.stack;
+    getContext(): IExecutionContext {
+        return this.interpreter.context;
     }
 
     //
