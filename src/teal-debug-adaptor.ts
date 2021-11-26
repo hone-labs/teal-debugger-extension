@@ -176,8 +176,18 @@ export class TealDebugAdaptor extends LoggingDebugSession {
 		response.body = {
 			scopes: [
                 new Scope("Data stack", this.registerVariableRequest("stack"), false),
+                new Scope("Scratch memory", this.registerVariableRequest("scratch"), false),
                 new Scope("Global state", this.registerVariableRequest("appGlobals"), false),
+                new Scope("Global fields", this.registerVariableRequest("globals"), false),
                 new Scope("Accounts", this.registerVariableRequest("accounts"), false),
+                new Scope("Asset params", this.registerVariableRequest("assetParams"), false),
+                new Scope("App params", this.registerVariableRequest("appParams"), false),
+                new Scope("Txn", this.registerVariableRequest("txn"), false),
+                new Scope("Gtxn", this.registerVariableRequest("Gtxn"), false),
+                new Scope("Itxn", this.registerVariableRequest("Itxn"), false),
+                new Scope("Last itxn", this.registerVariableRequest("lastItxn"), false),
+                new Scope("Txn side effects", this.registerVariableRequest("txnSideEffects"), false),
+                new Scope("Gaid", this.registerVariableRequest("gaid"), false),
 			],
 		};
 		this.sendResponse(response);
