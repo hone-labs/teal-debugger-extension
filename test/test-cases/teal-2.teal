@@ -1,3 +1,7 @@
+addr 7JOPVEP3ABJUW5YZ5WFIONLPWTZ5MYX5HFK4K7JLGSIAG7RRB42MNLQ224
+byte "aLocal"
+int 15
+app_local_put
 byte "aGlobal"
 int 12
 app_global_put
