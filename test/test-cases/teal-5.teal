@@ -1,5 +1,11 @@
 int 2
 app_params_get AppExtraProgramPages
+itxn_begin
+int 22
+itxn_field Fee
+itxn_submit
+itxn Fee
+int 1
 byte 0x0123456789abcd
 int 1
 txnas ApplicationArgs
