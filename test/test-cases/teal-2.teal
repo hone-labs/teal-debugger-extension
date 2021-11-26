@@ -1,3 +1,9 @@
+byte "aGlobal"
+int 12
+app_global_put
+byte "aGlobal"
+int 15
+app_global_put
 int 1
 int 2
 dup2
