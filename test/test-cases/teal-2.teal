@@ -1,4 +1,4 @@
-addr 7JOPVEP3ABJUW5YZ5WFIONLPWTZ5MYX5HFK4K7JLGSIAG7RRB42MNLQ224
+addr john
 byte "aLocal"
 int 15
 app_local_put
@@ -27,20 +27,20 @@ int 0
 bz there2
 b there2
 there2:
-addr 7JOPVEP3ABJUW5YZ5WFIONLPWTZ5MYX5HFK4K7JLGSIAG7RRB42MNLQ224
+addr john
 balance
 pop
-addr 7JOPVEP3ABJUW5YZ5WFIONLPWTZ5MYX5HFK4K7JLGSIAG7RRB42MNLQ224
+addr john
 int 1
 app_opted_in
-addr 7JOPVEP3ABJUW5YZ5WFIONLPWTZ5MYX5HFK4K7JLGSIAG7RRB42MNLQ224
+addr john
 int 1
 byte "test"
 app_local_get_ex
 pop
 pop
 pop
-addr 7JOPVEP3ABJUW5YZ5WFIONLPWTZ5MYX5HFK4K7JLGSIAG7RRB42MNLQ224
+addr john
 byte "aLocal"
 app_local_get
 pop
@@ -52,19 +52,19 @@ byte "anotherGlobal"
 app_global_get_ex
 pop
 pop
-addr 7JOPVEP3ABJUW5YZ5WFIONLPWTZ5MYX5HFK4K7JLGSIAG7RRB42MNLQ224
+addr john
 byte "aLocal"
 int 15
 app_local_put
 byte "aGlobal"
 int 12
 app_global_put
-addr 7JOPVEP3ABJUW5YZ5WFIONLPWTZ5MYX5HFK4K7JLGSIAG7RRB42MNLQ224
+addr john
 byte "aLocal"
 app_local_del
 byte "aGlobal"
 app_global_del
-addr 7JOPVEP3ABJUW5YZ5WFIONLPWTZ5MYX5HFK4K7JLGSIAG7RRB42MNLQ224
+addr john
 int 1
 asset_holding_get AssetBalance
 pop

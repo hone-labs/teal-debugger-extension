@@ -32,7 +32,7 @@
         }
     },
     "accounts": {
-        "7JOPVEP3ABJUW5YZ5WFIONLPWTZ5MYX5HFK4K7JLGSIAG7RRB42MNLQ224": {
+        "john": {
             "balance": 42,
             "locals": {
                 "aLocal": 33
