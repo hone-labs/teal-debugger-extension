@@ -5,8 +5,7 @@
 import * as vscode from 'vscode';
 import { fileExists, readFile, writeFile } from "./lib/file";
 import JSON5 from "json5";
-import { ITealInterpreterConfig, TealInterpreter } from "teal-interpreter";
-import { IExecutionContext } from "teal-interpreter/build/lib/context";
+import { Account, IExecutionContext, ITealInterpreterConfig, TealInterpreter } from "teal-interpreter";
 
 export class TealRuntime {
 
@@ -60,18 +59,25 @@ export class TealRuntime {
     }
 
     //
+    // Saves the debugger confiugration.
+    //
+    private async saveConfiguration() {
+        const configFilePath = this.loadedTealFilePath + ".json";
+        await writeFile(configFilePath, JSON5.stringify(this.interpreter.context.serialize(), null, 4));
+    }
+
+    //
     // Prompts the user to save their configuration.
     //
     private async promptSaveConfiguration(): Promise<void> {
         const response = await vscode.window.showInformationMessage(
-            `Would you like to save your updated configuration?`,
+            `Your configuration was updated.\r\nWould you like to save it?`,
             "Yes",
             "No"
         );
         
         if (response === "Yes") {
-            const configFilePath = this.loadedTealFilePath + ".json";
-            await writeFile(configFilePath, JSON5.stringify(this.interpreter.context.toConfiguration(), null, 4));
+            await this.saveConfiguration();
         }
     }
 
@@ -89,13 +95,13 @@ export class TealRuntime {
             );
             
             if (response === "Yes") {
-                this.interpreter.context.accounts[accountName] = {
+                this.interpreter.context.accounts[accountName] = new Account({
                     balance: 0,
                     minBalance: 0,
                     appLocals: {},
-                    appsOptedIn: new Set<string>(),
+                    appsOptedIn: [],
                     assetHoldings: {},
-                };
+                });
 
                 await this.promptSaveConfiguration();
             }
