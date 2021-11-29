@@ -2,10 +2,11 @@
 // A simplified wrapper for the teal runtime.
 //
 
-import { readFile } from "./lib/file";
+import * as vscode from 'vscode';
+import { fileExists, readFile } from "./lib/file";
 import JSON5 from "json5";
 import { ITealInterpreterConfig, TealInterpreter } from "teal-interpreter";
-import { IExecutionContext, ITypedValue } from "teal-interpreter/build/lib/context";
+import { IExecutionContext } from "teal-interpreter/build/lib/context";
 
 export class TealRuntime {
 
@@ -71,15 +72,21 @@ export class TealRuntime {
     //
     private async loadConfiguration(tealFilePath: string): Promise<ITealInterpreterConfig> {
         const configFilePath = tealFilePath + ".json";
-        try {
-            return JSON5.parse(await readFile(configFilePath));
+        if (await fileExists(configFilePath)) {
+            try {
+                return JSON5.parse(await readFile(configFilePath));
+            }
+            catch (err: any) {
+                const msg = `Failed to load TEAL debugger configuration file: ${configFilePath}`;
+                console.error(msg);
+                console.error(err && err.stack || err);
+    
+                throw new Error(msg);
+            }
         }
-        catch (err: any) {
-            const msg = `Failed to load TEAL debugger configuration file: ${configFilePath}`;
-            console.error(msg);
-            console.error(err && err.stack || err);
-
-            throw new Error(msg);
+        else {
+            const defaultConfig: ITealInterpreterConfig = {};
+            return defaultConfig;
         }
     }
 
