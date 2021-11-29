@@ -63,7 +63,7 @@ export class TealRuntime {
     //
     private async saveConfiguration() {
         const configFilePath = this.loadedTealFilePath + ".json";
-        await writeFile(configFilePath, JSON5.stringify(this.interpreter.context.serialize(), null, 4));
+        await writeFile(configFilePath, JSON.stringify(this.interpreter.context.serialize(), null, 4));
     }
 
     //
