@@ -3,7 +3,7 @@
 //
 
 import * as vscode from 'vscode';
-import { fileExists, readFile } from "./lib/file";
+import { fileExists, readFile, writeFile } from "./lib/file";
 import JSON5 from "json5";
 import { ITealInterpreterConfig, TealInterpreter } from "teal-interpreter";
 import { IExecutionContext } from "teal-interpreter/build/lib/context";
@@ -60,11 +60,46 @@ export class TealRuntime {
     }
 
     //
+    // Prompts the user to save their configuration.
+    //
+    private async promptSaveConfiguration(): Promise<void> {
+        const response = await vscode.window.showInformationMessage(
+            `Would you like to save your updated configuration?`,
+            "Yes",
+            "No"
+        );
+        
+        if (response === "Yes") {
+            const configFilePath = this.loadedTealFilePath + ".json";
+            await writeFile(configFilePath, JSON5.stringify(this.interpreter.context.toConfiguration(), null, 4));
+        }
+    }
+
+    //
     // Configures the algo-builder interpreter and parses the TEAL code to be debugged.
     //
     private configureInterpreter(configuration: ITealInterpreterConfig, tealCode: string) {
         this.interpreter = new TealInterpreter();
         this.interpreter.load(tealCode, configuration);
+        this.interpreter.context.onAccountNotFound = async (accountName: string) => {
+            const response = await vscode.window.showInformationMessage(
+                `Account "${accountName}" is not defined in your configuration. Do you want to create it?`,
+                "Yes",
+                "No"
+            );
+            
+            if (response === "Yes") {
+                this.interpreter.context.accounts[accountName] = {
+                    balance: 0,
+                    minBalance: 0,
+                    appLocals: {},
+                    appsOptedIn: new Set<string>(),
+                    assetHoldings: {},
+                };
+
+                await this.promptSaveConfiguration();
+            }
+        };
     }
 
     //
@@ -93,8 +128,8 @@ export class TealRuntime {
     //
     // Continue running the TEAL program until a breakpoint or end of program.
     //
-    continue() {
-        while (this.step()) {
+    async continue(): Promise<void> {
+        while (await this.step()) {
             // Continue until we need to stop.
         }
     }
@@ -103,7 +138,7 @@ export class TealRuntime {
     // Steps the debugger to the next line of code.
     // Returns true to continue or false to end debugging.
     //
-    step(): boolean {
+    async step(): Promise<boolean> {
         return this.interpreter.step();
     }
 

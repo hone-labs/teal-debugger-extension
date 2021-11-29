@@ -75,7 +75,7 @@ export class TealDebugAdaptor extends LoggingDebugSession {
                 this.sendEvent(new StoppedEvent('entry', THREAD_ID));
             }
             else {
-                this.tealRuntime.continue();
+                await this.tealRuntime.continue();
     
                 //
                 // Debugging session has ended.
@@ -285,29 +285,45 @@ export class TealDebugAdaptor extends LoggingDebugSession {
     // Continue running.
     //
     // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_Continue
-	protected continueRequest(response: DebugProtocol.ContinueResponse, args: DebugProtocol.ContinueArguments): void {
+	protected async continueRequest(response: DebugProtocol.ContinueResponse, args: DebugProtocol.ContinueArguments): Promise<void> {
 
-        this.tealRuntime.continue();
-
-        //
-        // Debugging session has ended.
-        //
-        // https://microsoft.github.io/debug-adapter-protocol/specification#Events_Terminated
-        //
-        this.sendEvent(new TerminatedEvent());
-
-		this.sendResponse(response);
-	}
+        try {
+            await this.tealRuntime.continue();
+    
+            //
+            // Debugging session has ended.
+            //
+            // https://microsoft.github.io/debug-adapter-protocol/specification#Events_Terminated
+            //
+            this.sendEvent(new TerminatedEvent());
+    
+            this.sendResponse(response);
+        }
+        catch (err: any) {    
+            console.error(`An error occured in the TEAL debugger:`);
+            console.error(err && err.stack || err);
+    
+            const msg = err.message || err.toString();
+    
+            this.sendErrorResponse(response, {
+                id: 1001,
+                format: msg,
+                showUser: false
+            });
+    
+            await vscode.window.showErrorMessage(msg);
+        }
+    }
 
     //
     // Run another step.
     //
     // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_Next
     //
-	protected nextRequest(response: DebugProtocol.NextResponse, args: DebugProtocol.NextArguments): void {
+	protected async nextRequest(response: DebugProtocol.NextResponse, args: DebugProtocol.NextArguments): Promise<void> {
 
         try {
-            if (this.tealRuntime.step()) {
+            if (await this.tealRuntime.step()) {
                 //
                 // Debugging can continue.
                 //

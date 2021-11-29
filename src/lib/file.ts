@@ -21,6 +21,14 @@ export async function fileExists(path: string): Promise<boolean> {
 }
 
 //
+// Writes a file to the VS Code workspace.
+//
+export async function writeFile(path: string, content: string): Promise<void> {
+    const uri = vscode.Uri.file(path);
+    await fs.writeFile(uri, Buffer.from(content));
+}
+
+//
 // Reads a file from the VS Code workspace.
 //
 export async function readFile(path: string): Promise<string> {
