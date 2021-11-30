@@ -5,7 +5,7 @@
 import * as vscode from 'vscode';
 import { fileExists, readFile, writeFile } from "./lib/file";
 import JSON5 from "json5";
-import { Account, IExecutionContext, ITealInterpreterConfig, TealInterpreter } from "teal-interpreter";
+import { IExecutionContext, ITealInterpreterConfig, TealInterpreter } from "teal-interpreter";
 
 export class TealRuntime {
 
@@ -84,25 +84,19 @@ export class TealRuntime {
     //
     // Configures the algo-builder interpreter and parses the TEAL code to be debugged.
     //
-    private configureInterpreter(configuration: ITealInterpreterConfig, tealCode: string) {
+    private async configureInterpreter(configuration: ITealInterpreterConfig, tealCode: string) {
+
         this.interpreter = new TealInterpreter();
         this.interpreter.load(tealCode, configuration);
-        this.interpreter.context.onAccountNotFound = async (accountName: string) => {
+        this.interpreter.context.onConfigNotFound = async (fieldPath: string) => {
             const response = await vscode.window.showInformationMessage(
-                `Account "${accountName}" is not defined in your configuration. Do you want to create it?`,
+                `Field "${fieldPath}" is not defined in your configuration. Do you want to create it?`,
                 "Yes",
                 "No"
             );
             
             if (response === "Yes") {
-                this.interpreter.context.accounts[accountName] = new Account({
-                    balance: 0,
-                    minBalance: 0,
-                    appLocals: {},
-                    appsOptedIn: [],
-                    assetHoldings: {},
-                });
-
+                this.interpreter.context.autoCreateField(fieldPath);
                 await this.promptSaveConfiguration();
             }
         };
