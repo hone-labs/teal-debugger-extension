@@ -1,0 +1,3 @@
+byte "aGlobal"
+int 12
+app_global_put

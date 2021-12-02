@@ -1,0 +1,4 @@
+addr john
+byte "aLocal"
+int 15
+app_local_put

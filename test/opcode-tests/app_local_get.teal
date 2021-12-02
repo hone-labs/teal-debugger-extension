@@ -1,0 +1,3 @@
+addr john
+byte "aLocal"
+app_local_get
