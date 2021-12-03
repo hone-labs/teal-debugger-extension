@@ -12,7 +12,7 @@
 			"args": [
                 "--disable-extensions",
 				"--extensionDevelopmentPath=${workspaceFolder}",
-                "${workspaceFolder}/test/test-cases"
+                "${workspaceFolder}/test/opcode-tests"
 			],
 			"outFiles": [
 				"${workspaceFolder}/dist/**/*.js"

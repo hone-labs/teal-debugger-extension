@@ -1,0 +1,4 @@
+addr john
+int 1
+byte "test"
+app_local_get_ex
