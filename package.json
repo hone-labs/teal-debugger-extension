@@ -37,6 +37,11 @@
                 ]
             }
         ],
+        "breakpoints": [
+            {
+              "language": "teal"
+            }
+        ],
         "debuggers": [
             {
                 "type": "teal",
@@ -104,7 +109,7 @@
     },
     "dependencies": {
         "json5": "^2.2.0",
-        "teal-interpreter": "^0.0.14",
+        "teal-interpreter": "^0.0.15",
         "vscode-debugadapter": "^1.49.0",
         "vscode-debugprotocol": "^1.49.0",
         "yaml": "^1.10.2"

@@ -3,7 +3,7 @@
 //
 
 import * as vscode from 'vscode';
-import { LoggingDebugSession, Scope, Source, StackFrame, StoppedEvent, TerminatedEvent, Thread } from 'vscode-debugadapter';
+import { InitializedEvent, LoggingDebugSession, Scope, Source, StackFrame, StoppedEvent, TerminatedEvent, Thread } from 'vscode-debugadapter';
 import { DebugProtocol } from 'vscode-debugprotocol';
 import { TealRuntime } from './teal-runtime';
 import * as path from "path";
@@ -39,6 +39,12 @@ export class TealDebugAdaptor extends LoggingDebugSession {
     //
     private tealRuntime = new TealRuntime();
 
+    //
+    // Cache of breakpoints that have been set.
+    // Because they can be set before the interprter is initialised.
+    //
+    private breakpointsSet: { [index: string]: number[] } = {};
+
 	/**
 	 * Creates a new debug adapter that is used for one debug session.
 	 * We configure the default implementation of a debug adapter here.
@@ -56,6 +62,25 @@ export class TealDebugAdaptor extends LoggingDebugSession {
 	}
 
     //
+    // The ‘initialize’ request is sent as the first request from the client to the debug adapter 
+    // in order to configure it with client capabilities and to retrieve capabilities from the debug adapter.
+    //
+    // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_Initialize
+    // 
+    protected initializeRequest(response: DebugProtocol.InitializeResponse, args: DebugProtocol.InitializeRequestArguments): void {
+        response.body = response.body || {};
+
+        this.sendResponse(response);
+
+        //
+        // This event indicates that the debug adapter is ready to accept configuration requests (e.g. SetBreakpointsRequest, SetExceptionBreakpointsRequest).
+        //
+        // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_Initialize
+        // 
+		this.sendEvent(new InitializedEvent());
+    }
+
+    //
     // Start a debugging session.
     // 
     // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_Launch
@@ -67,6 +92,7 @@ export class TealDebugAdaptor extends LoggingDebugSession {
 
         try {
             await this.tealRuntime.start(args.program);
+            this.updateBreakpoints();
     
             if (args.stopOnEntry) {
                 //
@@ -103,6 +129,40 @@ export class TealDebugAdaptor extends LoggingDebugSession {
             await vscode.window.showErrorMessage(msg);
         }
 	}
+
+    //
+    // Updates breakpoints into the interpreter.
+    //
+    private updateBreakpoints(): void {
+        const path = this.tealRuntime.getLoadedFilePath();
+        if (path === undefined) {
+            // No file is loaded yet.
+            return;
+        }
+
+        const lines = this.breakpointsSet[path];
+        if (lines) {
+            this.tealRuntime.setBreakpoints(lines);
+        }
+    }
+
+    //
+    // Sets multiple breakpoints for a single source and clears all previous breakpoints in that source.
+    //
+    // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_SetBreakpoints
+    //
+    protected setBreakPointsRequest(response: DebugProtocol.SetBreakpointsResponse, args: DebugProtocol.SetBreakpointsArguments): void {
+        if (args.source.path !== undefined) {
+            if (args.lines === undefined || args.lines.length === 0) {
+                delete this.breakpointsSet[args.source.path];
+            }
+            else {
+                this.breakpointsSet[args.source.path] = args.lines;
+            }
+
+            this.updateBreakpoints();
+        }
+    }
 
     // 
     // The request retrieves a list of all threads.
@@ -266,14 +326,24 @@ export class TealDebugAdaptor extends LoggingDebugSession {
 	protected async continueRequest(response: DebugProtocol.ContinueResponse, args: DebugProtocol.ContinueArguments): Promise<void> {
 
         try {
-            await this.tealRuntime.continue();
-    
-            //
-            // Debugging session has ended.
-            //
-            // https://microsoft.github.io/debug-adapter-protocol/specification#Events_Terminated
-            //
-            this.sendEvent(new TerminatedEvent());
+            if (await this.tealRuntime.continue()) {
+                //
+                // Debugging can continue.
+                //
+                // Tells VS Code that we have hit a breakpoint.
+                //
+                // https://microsoft.github.io/debug-adapter-protocol/specification#Events_Stopped
+                //
+                this.sendEvent(new StoppedEvent('breakpoint', THREAD_ID));
+            }
+            else {
+                //
+                // Debugging session has ended.
+                //
+                // https://microsoft.github.io/debug-adapter-protocol/specification#Events_Terminated
+                //
+                this.sendEvent(new TerminatedEvent());
+            }
     
             this.sendResponse(response);
         }
@@ -306,6 +376,7 @@ export class TealDebugAdaptor extends LoggingDebugSession {
                 // Debugging can continue.
                 //
                 // Tells VS Code that we have stopped ater a step.
+                //
                 // https://microsoft.github.io/debug-adapter-protocol/specification#Events_Stopped
                 //
                 this.sendEvent(new StoppedEvent('step', THREAD_ID));

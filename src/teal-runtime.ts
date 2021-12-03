@@ -39,6 +39,14 @@ export class TealRuntime {
     }
 
     //
+    // Sets breakpoints on the debugger.
+    // Clears previously set breakpoints.
+    //
+    setBreakpoints(lines: number[]): void {
+        this.interpreter.setBreakpoints(lines);
+    }
+
+    //
     // Get the execution context of the interpreter.
     //
     getContext(): IExecutionContext {
@@ -128,10 +136,8 @@ export class TealRuntime {
     //
     // Continue running the TEAL program until a breakpoint or end of program.
     //
-    async continue(): Promise<void> {
-        while (await this.step()) {
-            // Continue until we need to stop.
-        }
+    async continue(): Promise<boolean> {
+        return this.interpreter.continue();
     }
 
     //
