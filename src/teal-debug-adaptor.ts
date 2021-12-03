@@ -7,6 +7,7 @@ import { LoggingDebugSession, Scope, Source, StackFrame, StoppedEvent, Terminate
 import { DebugProtocol } from 'vscode-debugprotocol';
 import { TealRuntime } from './teal-runtime';
 import * as path from "path";
+import { isTypedValue } from "teal-interpreter";
 
 /**
  * This interface describes the specific launch attributes.
@@ -203,30 +204,6 @@ export class TealDebugAdaptor extends LoggingDebugSession {
     }
 
     //
-    // Returns true in the input is a typed value.
-    //
-    private isTypedValue(input: any): boolean {
-        const keys = Object.keys(input);
-        if (keys.length !== 3) {
-            return false;
-        }
-
-        if (keys[0] !== "type") {
-            return false;
-        }
-
-        if (keys[1] !== "value") {
-            return false;
-        }
-
-        if (keys[2] !== "from") {
-            return false;
-        }
-
-        return true;
-    }
-
-    //
     // Retrieves all child variables for the given variable reference.
     //
     // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_Variables
@@ -256,7 +233,7 @@ export class TealDebugAdaptor extends LoggingDebugSession {
                     });
                 }
                 else {
-                    const isValue = this.isTypedValue(value);
+                    const isValue = isTypedValue(value);
                     if (isValue) {
                         variables.push({
                             name: name,
