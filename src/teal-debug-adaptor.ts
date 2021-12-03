@@ -221,34 +221,35 @@ export class TealDebugAdaptor extends LoggingDebugSession {
             }
 
             const variables: DebugProtocol.Variable[] = [];
-
-            for (const [name, value] of Object.entries<any>(working)) {
-                const valueType = typeof value;
-                if (valueType === "number") {
-                    variables.push({
-                        name: name,
-                        value: value.toString(),
-                        type: "number",
-                        variablesReference: 0,
-                    });
-                }
-                else {
-                    const isValue = isTypedValue(value);
-                    if (isValue) {
+            if (working) {
+                for (const [name, value] of Object.entries<any>(working)) {
+                    const valueType = typeof value;
+                    if (valueType === "number") {
                         variables.push({
                             name: name,
-                            value: value.value.toString(),
-                            type: value.type,
+                            value: value.toString(),
+                            type: "number",
                             variablesReference: 0,
                         });
                     }
                     else {
-                        variables.push({
-                            name: name,
-                            value: "",
-                            variablesReference: this.registerVariableRequest(`${requestPath}/${name}`),
-                        });
-                    }    
+                        const isValue = isTypedValue(value);
+                        if (isValue) {
+                            variables.push({
+                                name: name,
+                                value: value.value.toString(),
+                                type: value.type,
+                                variablesReference: 0,
+                            });
+                        }
+                        else {
+                            variables.push({
+                                name: name,
+                                value: "",
+                                variablesReference: this.registerVariableRequest(`${requestPath}/${name}`),
+                            });
+                        }    
+                    }
                 }
             }
 
