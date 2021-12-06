@@ -33,8 +33,18 @@
                     ".teal"
                 ],
                 "aliases": [
-                    "Teal"
-                ]
+                    "Teal",
+                    "teal",
+                    "TEAL"
+                ],
+                "configuration": "./language/language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "teal",
+                "scopeName": "source.teal",
+                "path": "./language/teal.tmLanguage.json"
             }
         ],
         "breakpoints": [

@@ -1,0 +1,110 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "TEAL (Algorand) Language Features",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#labels"
+    },
+    {
+      "include": "#pragmas"
+    },
+    {
+      "include": "#invalid"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "name": "comment.line.teal",
+      "begin": "//",
+      "end": "$"
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "match": "\\b(base64|b64|base32|b32)(?:\\(|\\s+)([a-zA-Z0-9\\+\\/\\=]+)(?:\\)|\\s?|$)",
+          "captures": {
+            "1": {
+              "name": "keyword.other.unit.teal"
+            },
+            "2": {
+              "name": "string.quoted.triple.teal"
+            }
+          }
+        },
+        {
+          "match": "^(addr)\\s+([A-Z2-7\\=]+)",
+          "captures": {
+            "1": {
+              "name": "keyword.other.teal"
+            },
+            "2": {
+              "name": "string.unquoted.teal"
+            }
+          }
+        },
+        {
+          "name": "keyword.other.teal",
+          "match": "^(int|byte|addr|intcblock|intc|intc_0|intc_1|intc_2|intc_3|pushint|bytecblock|bytec|bytec_0|bytec_1|bytec_2|bytec_3|pushbytes|arg|arg_0|arg_1|arg_2|arg_3|txn|gtxn|txna|gtxna|gtxnas|gtxns|gtxnsa|gtxnsas|global|load|loads|store|stores|gload|gloads|args|log|itxn|itxna|txnas|cover|uncover|extract|itxn_submit|itxn_begin|itxn_field)\\b"
+        },
+        {
+          "name": "keyword.control.teal",
+          "match": "^(err|bnz|bz|b|return|pop|dup|dup2|dig|swap|select|assert|callsub|retsub|gaid|gaids)\\b"
+        },
+        {
+          "name": "keyword.other.unit.teal",
+          "match": "^(balance|min_balance|app_opted_in|app_local_get|app_local_get_ex|app_global_get|app_global_get_ex|app_local_put|app_global_put|app_local_del|app_global_del|asset_holding_get|asset_params_get|app_params_get|sha256|keccak256|sha512_256|ed25519verify|\\\u003c|\\\u003e|\\\u003c\\=|\\\u003e\\=|\u0026\u0026|len|itob|btoi|%|\\|\u0026|mulw|addw|divmodw|getbit|setbit|getbyte|setbyte|concat|substring|substring3|bitlen|ecdsa_verify|ecdsa_pk_decompress|ecdsa_pk_recover|extract3|extract_uint16|extract_uint32|extract_uint64|\\+|\\-|\\*|\\/|<=|>=|<|>|&&|\\|\\||==|!=|!|%|\\||&|\\^|~|b+|b==|b!=|b|b-|b*|b/|b%|b<|b>|b^|b&|b~|bzero|shl|shr|sqrt|exp|expw)\\s?$"
+        },
+        {
+          "name": "string.quoted.double.teal",
+          "match": "\\b(?\u003c=byte\\s+)(0x[0-9]+)\\b"
+        },
+        {
+          "name": "support.function.teal",
+          "match": "\\b(Sender|Fee|FirstValid|FirstValidTime|LastValid|Note|Lease|Receiver|Amount|CloseRemainderTo|VotePK|SelectionPK|VoteFirst|VoteLast|VoteKeyDilution|Type|TypeEnum|XferAsset|AssetAmount|AssetSender|AssetReceiver|AssetCloseTo|GroupIndex|TxID|ApplicationID|OnCompletion|ApplicationArgs|NumAppArgs|Accounts|NumAccounts|ApprovalProgram|ClearStateProgram|RekeyTo|ConfigAsset|ConfigAssetTotal|ConfigAssetDecimals|ConfigAssetDefaultFrozen|ConfigAssetUnitName|ConfigAssetName|ConfigAssetURL|ConfigAssetMetadataHash|ConfigAssetManager|ConfigAssetReserve|ConfigAssetFreeze|ConfigAssetClawback|FreezeAsset|FreezeAssetAccount|FreezeAssetFrozen|Assets|NumAssets|Applications|NumApplications|GlobalNumUint|GlobalNumByteSlice|LocalNumUint|LocalNumByteSlice|AssetBalance|AssetFrozen|AssetTotal|AssetDecimals|AssetDefaultFrozen|AssetUnitName|AssetName|AssetURL|AssetMetadataHash|AssetManager|AssetReserve|AssetFreeze|AssetClawback|AssetCreator|NoOp|OptIn|CloseOut|ClearState|UpdateApplication|DeleteApplication|Nonparticipation|Logs|NumLogs|CreatedAssetID)\\b"
+        },
+        {
+          "name": "support.class.teal",
+          "match": "\\b(ZeroAddress|MinTxnFee|MinBalance|MaxTxnLife|GroupSize|LogicSigVersion|Round|LatestTimestamp|CurrentApplicationID|CurrentApplicationAddress|GroupID|CreatorAddress|pay|keyreg|acfg|axfer|afrz|appl|unknown)\\s?"
+        },
+        {
+          "match": "^(app_params_get)(?:\\(|\\s+)(AppApprovalProgram|AppClearStateProgram|AppGlobalNumUint|AppGlobalNumByteSlice|AppLocalNumUint|AppLocalNumByteSlice|AppExtraProgramPages|AppCreator|AppAddress)(?:\\)|\\s?|$)",
+          "captures": {
+            "1": {
+              "name": "keyword.other.unit.teal"
+            },
+            "2": {
+              "name": "support.class.teal"
+            }
+          }
+        }
+      ]
+    },
+    "labels": {
+      "patterns": [
+        {
+          "name": "support.control.teal",
+          "match": "^\\w+:.*$"
+        }
+      ]
+    },
+    "pragmas": {
+      "name": "support.type.object.module.teal",
+      "match": "^#pragma\\b.*$"
+    },
+    "invalid": {
+      "patterns": [
+        {
+          "name": "invalid.illegal.teal",
+          "match": "^\\s+.*$"
+        }
+      ]
+    }
+  },
+  "scopeName": "source.teal"
+}
