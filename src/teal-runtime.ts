@@ -5,7 +5,7 @@
 import * as vscode from 'vscode';
 import { fileExists, readFile, writeFile } from "./lib/file";
 import JSON5 from "json5";
-import { IExecutionContext, ITealInterpreterConfig, TealInterpreter } from "teal-interpreter";
+import { IExecutionContext, ITealInterpreterConfig, loadValue, TealInterpreter } from "teal-interpreter";
 
 export class TealRuntime {
 
@@ -104,7 +104,25 @@ export class TealRuntime {
             );
             
             if (response === "Yes") {
-                this.interpreter.context.autoCreateField(fieldPath);
+                let defaultValue = this.interpreter.context.getDefaultValue(fieldPath);
+                if (defaultValue === undefined) {
+                    defaultValue = "int:0";
+                }
+                else if (typeof defaultValue === "number") {
+                    defaultValue = "int:" + defaultValue;
+                }
+
+                let userValue: string | undefined = await vscode.window.showInputBox({
+                    title: "Provide default field value",
+                    prompt: `Please provide a value for field ${fieldPath}`,
+                    value: defaultValue,
+                });
+
+                if (userValue === undefined) {
+                    userValue = defaultValue;
+                }
+
+                this.interpreter.context.autoCreateField(fieldPath, loadValue(userValue!));
                 await this.promptSaveConfiguration();
             }
         };
