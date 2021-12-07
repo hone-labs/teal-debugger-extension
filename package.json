@@ -3,7 +3,7 @@
     "displayName": "TEAL debugger",
     "publisher": "sovereign-labs",
     "description": "A TEAL debugger extension for Visual Studio code",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "repository": {
         "type": "git",
         "url": "git@github.com:sovereign-labs/teal-debugger-extension.git"
