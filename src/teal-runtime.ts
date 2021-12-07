@@ -135,7 +135,9 @@ export class TealRuntime {
         const configFilePath = tealFilePath + ".json";
         if (await fileExists(configFilePath)) {
             try {
-                return JSON5.parse(await readFile(configFilePath));
+                const config = JSON5.parse(await readFile(configFilePath));    
+                vscode.window.showInformationMessage(`Loaded configuration file ${configFilePath}`);
+                return config;    
             }
             catch (err: any) {
                 const msg = `Failed to load TEAL debugger configuration file: ${configFilePath}`;
