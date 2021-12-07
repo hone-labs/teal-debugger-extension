@@ -3,7 +3,7 @@
 //
 
 import * as vscode from 'vscode';
-import { InitializedEvent, LoggingDebugSession, Scope, Source, StackFrame, StoppedEvent, TerminatedEvent, Thread } from 'vscode-debugadapter';
+import { ContinuedEvent, InitializedEvent, LoggingDebugSession, Scope, Source, StackFrame, StoppedEvent, TerminatedEvent, Thread } from 'vscode-debugadapter';
 import { DebugProtocol } from 'vscode-debugprotocol';
 import { TealRuntime } from './teal-runtime';
 import * as path from "path";
@@ -334,6 +334,7 @@ export class TealDebugAdaptor extends LoggingDebugSession {
             //
             // Already running, ignore other requests.
             //
+            this.sendEvent(new StoppedEvent('step', THREAD_ID));
             this.sendResponse(response);
             return;
         }
@@ -392,13 +393,14 @@ export class TealDebugAdaptor extends LoggingDebugSession {
             //
             // Already running, ignore other requests.
             //
+            this.sendEvent(new StoppedEvent('step', THREAD_ID));
             this.sendResponse(response);
             return;
         }
 
         try {
             this.running = true;
-            
+
             if (await this.tealRuntime.step()) {
                 //
                 // Debugging can continue.
