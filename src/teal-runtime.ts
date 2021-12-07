@@ -63,7 +63,7 @@ export class TealRuntime {
         const tealCode = await readFile(tealFilePath);
         const configuration = await this.loadConfiguration(tealFilePath);
 
-        this.configureInterpreter(configuration, tealCode);
+        await this.configureInterpreter(configuration, tealCode);
     }
 
     //
