@@ -44,6 +44,11 @@ export class TealDebugAdaptor extends LoggingDebugSession {
     // Because they can be set before the interprter is initialised.
     //
     private breakpointsSet: { [index: string]: number[] } = {};
+    
+    //
+    // Set to true when running code.
+    //
+    private running: boolean = false;
 
 	/**
 	 * Creates a new debug adapter that is used for one debug session.
@@ -325,7 +330,17 @@ export class TealDebugAdaptor extends LoggingDebugSession {
     // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_Continue
 	protected async continueRequest(response: DebugProtocol.ContinueResponse, args: DebugProtocol.ContinueArguments): Promise<void> {
 
+        if (this.running) {
+            //
+            // Already running, ignore other requests.
+            //
+            this.sendResponse(response);
+            return;
+        }
+
         try {
+            this.running = true;
+
             if (await this.tealRuntime.continue()) {
                 //
                 // Debugging can continue.
@@ -361,6 +376,9 @@ export class TealDebugAdaptor extends LoggingDebugSession {
     
             await vscode.window.showErrorMessage(msg);
         }
+        finally {
+            this.running = false;
+        }
     }
 
     //
@@ -370,7 +388,17 @@ export class TealDebugAdaptor extends LoggingDebugSession {
     //
 	protected async nextRequest(response: DebugProtocol.NextResponse, args: DebugProtocol.NextArguments): Promise<void> {
 
+        if (this.running) {
+            //
+            // Already running, ignore other requests.
+            //
+            this.sendResponse(response);
+            return;
+        }
+
         try {
+            this.running = true;
+            
             if (await this.tealRuntime.step()) {
                 //
                 // Debugging can continue.
@@ -405,6 +433,9 @@ export class TealDebugAdaptor extends LoggingDebugSession {
             });
 
             vscode.window.showErrorMessage(msg);
+        }
+        finally {
+            this.running = false;
         }
 	}
 }
