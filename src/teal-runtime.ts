@@ -6,6 +6,8 @@ import * as vscode from 'vscode';
 import { fileExists, readFile, writeFile } from "./lib/file";
 import JSON5 from "json5";
 import { IExecutionContext, ITealInterpreterConfig, loadValue, TealInterpreter } from "teal-interpreter";
+import * as path from "path";
+import * as fs from "fs-extra";
 
 export class TealRuntime {
 
@@ -18,6 +20,11 @@ export class TealRuntime {
     // The TEAL interpreter.
     //
     private interpreter = new TealInterpreter();
+
+    //
+    // The name of the directory that contains TEAL debugger configuration files.
+    //
+    private readonly tealConfigDir = ".teal-debugger";
 
     //
     // Gets the file path for the currently loaded TEAL file.
@@ -70,8 +77,14 @@ export class TealRuntime {
     // Saves the debugger confiugration.
     //
     private async saveConfiguration() {
-        const configFilePath = this.loadedTealFilePath + ".json";
+        const dirPath = path.dirname(this.loadedTealFilePath!);
+        const configDirPath = path.join(dirPath, this.tealConfigDir);
+        await fs.ensureDir(configDirPath);
+
+        const fileName = path.basename(this.loadedTealFilePath!);
+        const configFilePath = path.join(configDirPath, fileName + ".json");
         await writeFile(configFilePath, JSON.stringify(this.interpreter.context.serialize(), null, 4));
+        vscode.window.showInformationMessage(`Saved configuration file ${configFilePath}`);
     }
 
     //
@@ -132,7 +145,10 @@ export class TealRuntime {
     // Loads the TEAL debugger configuration file.
     //
     private async loadConfiguration(tealFilePath: string): Promise<ITealInterpreterConfig> {
-        const configFilePath = tealFilePath + ".json";
+        const dirPath = path.dirname(tealFilePath);
+        const fileName = path.basename(tealFilePath);
+        const configDirPath = path.join(dirPath, this.tealConfigDir);
+        const configFilePath = path.join(configDirPath, fileName + ".json");
         if (await fileExists(configFilePath)) {
             try {
                 const config = JSON5.parse(await readFile(configFilePath));    
