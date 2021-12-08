@@ -8,6 +8,8 @@ import JSON5 from "json5";
 import { IExecutionContext, ITealInterpreterConfig, loadValue, TealInterpreter } from "teal-interpreter";
 import * as path from "path";
 import * as fs from "fs-extra";
+import * as os from "os";
+import { config } from 'process';
 
 export class TealRuntime {
 
@@ -79,29 +81,38 @@ export class TealRuntime {
     }
 
     //
+    // Finds an untaken file name. 
+    //
+    private async chooseNextAvailableFileName(dirPath: string, baseName: string, ext: string): Promise<string> {
+        let attempt = 0;
+        while (true) {
+            const nextPath = attempt === 0
+                ? path.join(dirPath, `${baseName}.${ext}`)
+                : path.join(dirPath, `${baseName}-${attempt}.${ext}`)
+            if (await fs.pathExists(nextPath)) {
+                attempt += 1; // Try next one along.
+            }
+            else {
+                // Have a free file.
+                return nextPath;
+            }
+        }
+    }
+
+    //
     // Saves the debugger confiugration.
     //
-    private async saveConfiguration() {
+    private async saveConfiguration(config: ITealInterpreterConfig) {
         const fileInfo = path.parse(this.loadedTealFilePath!);
         const configDirPath = path.join(fileInfo.dir, this.tealConfigDir);
         await fs.ensureDir(configDirPath);
 
         if (this.loadedConfigurationFilePath === undefined) {
             // Find an untaken configuration file name.
-            let attempt = 1;
-            while (true) {
-                this.loadedConfigurationFilePath = path.join(configDirPath, fileInfo.base + `-${attempt}.json`);
-                if (await fs.pathExists(this.loadedConfigurationFilePath)) {
-                    attempt += 1; // Try next one along.
-                }
-                else {
-                    // Have a free file.
-                    break;
-                }
-            }
+            this.loadedConfigurationFilePath = await this.chooseNextAvailableFileName(configDirPath, fileInfo.base, "json");
         }
 
-        await writeFile(this.loadedConfigurationFilePath, JSON.stringify(this.interpreter.context.serialize(), null, 4));
+        await writeFile(this.loadedConfigurationFilePath, JSON.stringify(config, null, 4));
         vscode.window.showInformationMessage(`Saved configuration file ${this.loadedConfigurationFilePath}`);
     }
 
@@ -116,7 +127,7 @@ export class TealRuntime {
         );
         
         if (response === "Yes") {
-            await this.saveConfiguration();
+            await this.saveConfiguration(this.interpreter.context.serialize());
         }
     }
 
@@ -162,22 +173,96 @@ export class TealRuntime {
     //
     // Find configuration files that match the TEAL file.
     //
-    private async findConfigurationFiles(configDirPath: string, tealFileName: string): Promise<string[]> {
+    private async findConfigurationFiles(configDirPath: string, tealFileName?: string): Promise<string[]> {
 
-        tealFileName = tealFileName.toLowerCase();
+        await fs.ensureDir(configDirPath);
+
+        if (tealFileName !== undefined) {
+            tealFileName = tealFileName.toLowerCase();
+        }
 
         const matchingConfigFiles: string[] = [];
 
         const files = await vscode.workspace.fs.readDirectory(vscode.Uri.file(configDirPath));
         for (const [fileName, fileType] of files) {
-            if (fileType === vscode.FileType.File) {
-                if (fileName.toLowerCase().startsWith(tealFileName)) {
-                    matchingConfigFiles.push(fileName);
+            if (fileType !== vscode.FileType.File) {
+                continue; // Skip sub-directories.
+            }
+
+            const fileNameLwr = fileName.toLowerCase();
+            if (tealFileName !== undefined) {
+                if (!fileNameLwr.startsWith(tealFileName)) {
+                    continue; // Skip this file.
                 }
             }
+
+            if (!fileNameLwr.endsWith(".json")) {
+                continue; // Skip non-JSON files.
+            }
+
+            // Found a matching configuration file.
+            matchingConfigFiles.push(fileName);
         }
         
         return matchingConfigFiles;
+    }
+
+    //
+    // Loads a specific configuration file.
+    //
+    private async loadSpecificConfiguration(configFilePath: string, loadedConfigurationFilePath: string): Promise<ITealInterpreterConfig> {
+        try {
+            const config = JSON5.parse(await readFile(configFilePath));    
+            vscode.window.showInformationMessage(`Loaded configuration file ${configFilePath}`);
+            this.loadedConfigurationFilePath = loadedConfigurationFilePath;
+            return config;    
+        }
+        catch (err: any) {
+            const msg = `Failed to load TEAL debugger configuration file: ${configFilePath}`;
+            console.error(msg);
+            console.error(err && err.stack || err);
+
+            throw new Error(msg);
+        }
+    }
+
+    //
+    // Allows the user to pick a default configuration, then starts a new configuration file from that one.
+    //
+    private async createNewConfigurationFromDefault(configDirPath: string, tealFileName: string): Promise<ITealInterpreterConfig> {
+        const defaultConfigDirPath = path.join(os.homedir(), this.tealConfigDir);
+        const defaultConfigFiles: string[] = await this.findConfigurationFiles(defaultConfigDirPath);
+        if (defaultConfigFiles.length === 0) {
+            throw new Error(`No default configuration files were found at ${defaultConfigDirPath}. You should generate a new configuration and copy it there to create a default.`);
+        }
+
+        const createEmptyPrompt = "Create an empty configuration file";
+        defaultConfigFiles.push(createEmptyPrompt);
+
+        const defaultPick = await vscode.window.showQuickPick(defaultConfigFiles, {
+            title: "Pick a default configuration file to start with:",
+        });
+
+        if (defaultPick === undefined) {
+            // Fallback: return default configuration.
+            const defaultConfig: ITealInterpreterConfig = {};
+            return defaultConfig;
+        }
+
+        let config: ITealInterpreterConfig;
+        const loadedConfigurationFilePath = await this.chooseNextAvailableFileName(configDirPath, tealFileName, "json");
+
+        if (defaultPick === createEmptyPrompt) {
+            config = {}; // Empty configuration!
+            this.loadedConfigurationFilePath = loadedConfigurationFilePath;
+        }
+        else {
+            const configFilePath = path.join(defaultConfigDirPath, defaultPick);
+            config = await this.loadSpecificConfiguration(configFilePath, loadedConfigurationFilePath);
+        }
+
+        await this.saveConfiguration(config);
+        return config;
     }
 
     //
@@ -187,25 +272,21 @@ export class TealRuntime {
         const fileInfo = path.parse(tealFilePath);
         const configDirPath = path.join(fileInfo.dir, this.tealConfigDir);
         const configFiles = await this.findConfigurationFiles(configDirPath, fileInfo.name);
-        if (configFiles.length > 0) {
-            const pick = await vscode.window.showQuickPick(configFiles, {
-                title: "Pick a configuration file for the TEAL debugger:",                
-            });
-            if (pick !== undefined) {
+        const proceedWithNonePrompt = "Proceed with no configuration file";
+        configFiles.push(proceedWithNonePrompt);
+        const createNewPrompt = "Create a new configuration file...";
+        configFiles.push(createNewPrompt);
+
+        const pick = await vscode.window.showQuickPick(configFiles, {
+            title: "Pick a configuration file for the TEAL debugger:",                
+        });
+        if (pick !== undefined && pick !== proceedWithNonePrompt) {
+            if (pick === createNewPrompt) {
+                return await this.createNewConfigurationFromDefault(configDirPath, fileInfo.base);        
+            }
+            else {
                 const configFilePath = path.join(configDirPath, pick);
-                try {
-                    const config = JSON5.parse(await readFile(configFilePath));    
-                    vscode.window.showInformationMessage(`Loaded configuration file ${configFilePath}`);
-                    this.loadedConfigurationFilePath = configFilePath;
-                    return config;    
-                }
-                catch (err: any) {
-                    const msg = `Failed to load TEAL debugger configuration file: ${configFilePath}`;
-                    console.error(msg);
-                    console.error(err && err.stack || err);
-        
-                    throw new Error(msg);
-                }
+                return await this.loadSpecificConfiguration(configFilePath, configFilePath);
             }
         }
 
