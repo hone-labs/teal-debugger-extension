@@ -3,7 +3,7 @@
     "displayName": "TEAL debugger",
     "publisher": "sovereign-labs",
     "description": "A TEAL debugger extension for Visual Studio code",
-    "version": "0.0.3",
+    "version": "0.0.5",
     "repository": {
         "type": "git",
         "url": "git@github.com:sovereign-labs/teal-debugger-extension.git"
@@ -103,6 +103,7 @@
         "package": "vsce package"
     },
     "devDependencies": {
+        "@types/fs-extra": "^9.0.13",
         "@types/glob": "^7.1.4",
         "@types/mocha": "^9.0.0",
         "@types/node": "14.x",
@@ -118,8 +119,9 @@
         "webpack-cli": "^4.9.1"
     },
     "dependencies": {
+        "fs-extra": "^10.0.0",
         "json5": "^2.2.0",
-        "teal-interpreter": "^0.0.18",
+        "teal-interpreter": "^0.0.20",
         "vscode-debugadapter": "^1.49.0",
         "vscode-debugprotocol": "^1.49.0",
         "yaml": "^1.10.2"
