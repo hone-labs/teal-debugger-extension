@@ -1,18 +1,26 @@
 {
     "name": "teal-debugger-extension",
     "displayName": "TEAL debugger",
-    "publisher": "sovereign-labs",
+    "publisher": "optio-labs",
     "description": "A TEAL debugger extension for Visual Studio code",
-    "version": "0.0.5",
+    "version": "0.0.6",
+    "author": "ashley@codecapers.com.au",
+    "license": "SEE LICENSE IN LICENSE.md",
+    "bugs": {
+        "url": "https://github.com/optio-labs/teal-debugger-extension/issues",
+        "email": "ashley@codecapers.com.au"
+    },
+    "homepage": "https://github.com/optio-labs/teal-debugger-extension",
     "repository": {
         "type": "git",
-        "url": "git@github.com:sovereign-labs/teal-debugger-extension.git"
+        "url": "git@github.com:optio-labs/teal-debugger-extension.git"
     },
     "engines": {
         "vscode": "^1.60.0"
     },
     "categories": [
-        "Other"
+        "Programming Languages",
+        "Debuggers"
     ],
     "activationEvents": [
         "onCommand:teal-debugger-extension.helloWorld",
