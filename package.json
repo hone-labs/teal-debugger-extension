@@ -3,7 +3,7 @@
     "displayName": "TEAL debugger",
     "publisher": "optio-labs",
     "description": "A TEAL debugger extension for Visual Studio code",
-    "version": "0.0.8",
+    "version": "0.0.9",
     "author": "ashley@codecapers.com.au",
     "license": "SEE LICENSE IN LICENSE.md",
     "bugs": {
