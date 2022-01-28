@@ -4,7 +4,7 @@
   "publisher": "optio-labs",
   "description": "A TEAL debugger extension for Visual Studio code",
   "icon": "images/icon.png",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "author": "ashley@codecapers.com.au",
   "license": "SEE LICENSE IN LICENSE.md",
   "bugs": {
