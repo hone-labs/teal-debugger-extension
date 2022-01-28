@@ -85,3 +85,9 @@ jobs:
           asset_path: ./teal-debugger-extension-${{ needs.get_version.outputs.version }}.vsix
           asset_name: teal-debugger-extension-${{ needs.get_version.outputs.version }}.vsix
           asset_content_type: application/octet-stream
+
+      - name: Publish
+        run: npm run publish
+        env:
+          VSCE_PAT: ${{ secrets.ASHS_AZURE_DEVOPS_PAT }}
+
