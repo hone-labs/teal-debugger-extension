@@ -1,7 +1,7 @@
 {
   "name": "teal-debugger-extension",
   "displayName": "TEAL debugger",
-  "publisher": "Optio Labs",
+  "publisher": "optio-labs",
   "description": "A TEAL debugger extension for Visual Studio code",
   "version": "0.0.10",
   "author": "ashley@codecapers.com.au",
