@@ -4,7 +4,7 @@
   "publisher": "optio-labs",
   "description": "A TEAL debugger extension for Visual Studio code",
   "icon": "images/icon.png",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "author": "ashley@codecapers.com.au",
   "license": "SEE LICENSE IN LICENSE.md",
   "bugs": {
@@ -131,7 +131,7 @@
   "dependencies": {
     "fs-extra": "^10.0.0",
     "json5": "^2.2.0",
-    "teal-interpreter": "^0.0.21",
+    "teal-interpreter": "^0.0.22",
     "vscode-debugadapter": "^1.49.0",
     "vscode-debugprotocol": "^1.49.0",
     "yaml": "^1.10.2"
