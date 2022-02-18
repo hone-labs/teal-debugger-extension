@@ -33,7 +33,7 @@ jobs:
 
       - uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: 16
           cache: 'npm'
 
       - name: Cache
@@ -43,10 +43,10 @@ jobs:
           path: cache
           key: ${{ runner.os }}-cache
 
-      - name: Check version
+      - name: Stamp version
         run: |
           export VERSION=${{ needs.get_version.outputs.version }}
-          node check-version.js
+          node stamp-version.js
 
       - name: Install dependencies
         run: |
