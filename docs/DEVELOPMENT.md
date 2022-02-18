@@ -78,6 +78,24 @@ Install the extension like this:
 code --install-extension teal-debugger-extension-<version>.vsix
 ```
 
+## Deployment
+
+To deploy a new version of the TEAL debugger simply tag the commit for the new release with the version number in the following form:
+
+```bash
+v0.0.5
+```
+
+Don't forget to add the `v` to the tag, this is how the deployment pipeline knows the tag is a version (and not some other tag).
+
+Now push tags:
+
+```
+git push --tags
+```
+
+The updated version will deploy automatically to npm (provided the automated tests pass).
+
 ## Resources
 
 - This code developed from the VS Code "your first extension" tutorial:
@@ -93,3 +111,6 @@ code --install-extension teal-debugger-extension-<version>.vsix
 - Debug Adaptor Protocol (this protocol is independent of VS Code):
     - https://microsoft.github.io/debug-adapter-protocol/
     - https://microsoft.github.io/debug-adapter-protocol/overview
+
+
+
