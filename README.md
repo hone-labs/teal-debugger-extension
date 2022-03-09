@@ -1,6 +1,6 @@
 # teal-debugger-extension
 
-This is TEAL debugger extension for VS Code.
+This is TEAL debugger extension for VS Code with support up to and including TEAL 5. Support for TEAL 6 is coming in the future.
 
 It allows you to run TEAL code directly on a simulated AVM (Algorand virtual machine) without having to do any setup or configuration 
 
