@@ -31,26 +31,21 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: actions/setup-node@v2
+      # Installs pnpm.
+      - uses: pnpm/action-setup@v2.1.0
+        with:
+          version: 6.30.0
+
+      # Installs Node.js.      
+      - uses: actions/setup-node@v1
         with:
           node-version: 16
-          cache: 'npm'
-
-      - name: Cache
-        id: cache
-        uses: actions/cache@v2
-        with:
-          path: cache
-          key: ${{ runner.os }}-cache
+          cache: "pnpm"
 
       - name: Stamp version
         run: |
           export VERSION=${{ needs.get_version.outputs.version }}
           node stamp-version.js
-
-      - uses: pnpm/action-setup@v2.1.0
-        with:
-          version: 6.30.0
 
       - name: Install dependencies
         run: |
