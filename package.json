@@ -131,7 +131,7 @@
   "dependencies": {
     "fs-extra": "^10.0.0",
     "json5": "^2.2.0",
-    "teal-interpreter": "^0.0.32",
+    "teal-interpreter": "^0.0.33",
     "vscode-debugadapter": "^1.49.0",
     "vscode-debugprotocol": "^1.49.0",
     "yaml": "^1.10.2"
