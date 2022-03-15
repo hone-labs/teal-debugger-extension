@@ -24,7 +24,7 @@ Install dependencies:
 
 ```bash
 cd teal-debugger-extension
-npm install
+pnpm install
 ```
 
 ## Debug the debugger
