@@ -7,15 +7,16 @@ Have Node.js installed.
 Install a single version: https://nodejs.org/
 
 Or manage multiples versions using `nvm`:
-- For Windows: https://github.com/coreybutler/nvm-windows
-- For Linux/MacOS: https://github.com/nvm-sh/nvm
+
+-   For Windows: https://github.com/coreybutler/nvm-windows
+-   For Linux/MacOS: https://github.com/nvm-sh/nvm
 
 ## Get the code
 
 Clone this repo:
 
 ```bash
-git clone git@github.com:optio-labs/teal-debugger-extension.git
+git clone git@github.com:hone-labs/teal-debugger-extension.git
 ```
 
 ## Setup
@@ -98,19 +99,16 @@ The updated version will deploy automatically to npm (provided the automated tes
 
 ## Resources
 
-- This code developed from the VS Code "your first extension" tutorial:
-    - https://code.visualstudio.com/api/get-started/your-first-extension
-- VS Code API reference:
-    - https://code.visualstudio.com/api/references/vscode-api
-- Implementing a VS Code debugger extension:
-    - https://code.visualstudio.com/api/extension-capabilities/overview#debugging
-- List of debugger adaptors:
-    - https://microsoft.github.io/debug-adapter-protocol/implementors/adapters/
-- Debugger API reference:
-    - https://code.visualstudio.com/api/references/vscode-api#debug
-- Debug Adaptor Protocol (this protocol is independent of VS Code):
-    - https://microsoft.github.io/debug-adapter-protocol/
-    - https://microsoft.github.io/debug-adapter-protocol/overview
-
-
-
+-   This code developed from the VS Code "your first extension" tutorial:
+    -   https://code.visualstudio.com/api/get-started/your-first-extension
+-   VS Code API reference:
+    -   https://code.visualstudio.com/api/references/vscode-api
+-   Implementing a VS Code debugger extension:
+    -   https://code.visualstudio.com/api/extension-capabilities/overview#debugging
+-   List of debugger adaptors:
+    -   https://microsoft.github.io/debug-adapter-protocol/implementors/adapters/
+-   Debugger API reference:
+    -   https://code.visualstudio.com/api/references/vscode-api#debug
+-   Debug Adaptor Protocol (this protocol is independent of VS Code):
+    -   https://microsoft.github.io/debug-adapter-protocol/
+    -   https://microsoft.github.io/debug-adapter-protocol/overview
