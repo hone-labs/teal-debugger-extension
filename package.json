@@ -8,13 +8,13 @@
     "author": "ashley@codecapers.com.au",
     "license": "SEE LICENSE IN LICENSE.md",
     "bugs": {
-        "url": "https://github.com/optio-labs/teal-debugger-extension/issues",
+        "url": "https://github.com/hone-labs/teal-debugger-extension/issues",
         "email": "ashley@codecapers.com.au"
     },
-    "homepage": "https://github.com/optio-labs/teal-debugger-extension",
+    "homepage": "https://github.com/hone-labs/teal-debugger-extension",
     "repository": {
         "type": "git",
-        "url": "https://github.com/optio-labs/teal-debugger-extension.git"
+        "url": "https://github.com/hone-labs/teal-debugger-extension.git"
     },
     "engines": {
         "vscode": "^1.60.0"
