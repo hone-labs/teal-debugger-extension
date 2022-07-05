@@ -12,7 +12,7 @@ specifiers:
   glob: ^7.1.7
   json5: ^2.2.0
   mocha: ^9.1.1
-  teal-interpreter: ^0.0.33
+  teal-interpreter: ^0.0.39
   ts-loader: ^9.2.5
   typescript: ^4.4.3
   vsce: ^2.5.0
@@ -25,7 +25,7 @@ specifiers:
 dependencies:
   fs-extra: 10.0.1
   json5: 2.2.0
-  teal-interpreter: 0.0.33
+  teal-interpreter: 0.0.39
   vscode-debugadapter: 1.51.0
   vscode-debugprotocol: 1.51.0
   yaml: 1.10.2
@@ -326,8 +326,8 @@ packages:
     engines: {node: '>= 10'}
     dev: false
 
-  /algosdk/1.14.0:
-    resolution: {integrity: sha512-IaaomouKmuCnK+xLuz27X8DQro0ZjVyw4zHvV8HJap9PPDOQKbvpm+UIIsEf0CmC0xWPXIxfFbmlJ0y5CeGlqQ==}
+  /algosdk/1.18.0:
+    resolution: {integrity: sha512-+baSG0IrcZf2Qt35HyQF7wAkOykEW2iMhghUa/tcFNu4dMcvv41AUPRrB1T/bKq6dsb4OvbCzCEHAdaztBp32w==}
     dependencies:
       algo-msgpack-with-bigint: 2.1.1
       buffer: 6.0.3
@@ -396,7 +396,7 @@ packages:
     dev: true
 
   /asynckit/0.4.0:
-    resolution: {integrity: sha1-x57Zf380y48robyXkLzDZkdLS3k=}
+    resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
     dev: false
 
   /azure-devops-node-api/11.1.1:
@@ -469,7 +469,7 @@ packages:
     dev: true
 
   /brorand/1.1.0:
-    resolution: {integrity: sha1-EsJe/kCkXjwyPrhnWgoM5XsiNx8=}
+    resolution: {integrity: sha512-cKV8tMCEpQs4hK/ik71d6LrPOnpkpGBR0wzxqr68g2m/LB2GxVYQroAjMJZRVM1Y4BCjCKc3vAamxSzOY2RP+w==}
     dev: false
 
   /browser-stdout/1.3.1:
@@ -759,7 +759,7 @@ packages:
     dev: true
 
   /delayed-stream/1.0.0:
-    resolution: {integrity: sha1-3zrhmayt+31ECqrgsp4icrJOxhk=}
+    resolution: {integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==}
     engines: {node: '>=0.4.0'}
     dev: false
 
@@ -1134,7 +1134,7 @@ packages:
     dev: false
 
   /hmac-drbg/1.0.1:
-    resolution: {integrity: sha1-0nRXAQJabHdabFRXk+1QL8DGSaE=}
+    resolution: {integrity: sha512-Tti3gMqLdZfhOQY1Mzf/AanLiqh1WTiJgEj26ZuYQ9fbkLomzGchCws4FyrSd4VkpBfiNhaE1On+lOz894jvXg==}
     dependencies:
       hash.js: 1.1.7
       minimalistic-assert: 1.0.1
@@ -1430,7 +1430,7 @@ packages:
     dev: true
 
   /methods/1.1.2:
-    resolution: {integrity: sha1-VSmk1nZUE07cxSZmVoNbD4Ua/O4=}
+    resolution: {integrity: sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==}
     engines: {node: '>= 0.6'}
     dev: false
 
@@ -1479,7 +1479,7 @@ packages:
     dev: false
 
   /minimalistic-crypto-utils/1.0.1:
-    resolution: {integrity: sha1-9sAMHAsIIkblxNmd+4x8CDsrWCo=}
+    resolution: {integrity: sha512-JIYlbt6g8i5jKfJ3xz7rF0LXmv2TkDxBLUkiBeZ7bAx4GnnNMr8xFpGnOxn6GhTEHx3SjRrZEoU+j04prX1ktg==}
     dev: false
 
   /minimatch/3.1.2:
@@ -1836,7 +1836,7 @@ packages:
     dev: true
 
   /requires-port/1.0.0:
-    resolution: {integrity: sha1-kl0mAdOaxIXgkc8NpcbmlNw9yv8=}
+    resolution: {integrity: sha512-KigOCHcocU3XODJxsu8i/j8T9tzT4adHiecwORRQ0ZZFcp7ahwXuRU1m+yuO90C5ZUyGeGfocHDI14M3L3yDAQ==}
     dev: false
 
   /resolve-cwd/3.0.0:
@@ -2114,12 +2114,13 @@ packages:
       readable-stream: 3.6.0
     dev: true
 
-  /teal-interpreter/0.0.33:
-    resolution: {integrity: sha512-r4CZXvN673A8UsKOLk/rlheHD0kOpLDmDWhI9P8o0MzV/yof150kyTbZqZGy07mqXzKQoDmg/gJSzS5a0tlWlw==}
+  /teal-interpreter/0.0.39:
+    resolution: {integrity: sha512-nVA1DFOumAfiNrBAAutp6kuJFyUrl6JAm3xkeFfWDBl11GpHZBMppVOuBZ/jmbpge92UrL49nE3It+I5ZpUrpA==}
     hasBin: true
     dependencies:
-      algosdk: 1.14.0
+      algosdk: 1.18.0
       elliptic: 6.5.4
+      fs-extra: 10.0.1
       hi-base32: 0.5.1
       js-sha256: 0.9.0
       js-sha512: 0.8.0
