@@ -3,13 +3,12 @@
 //
 
 import * as vscode from 'vscode';
-import { fileExists, readFile, writeFile } from "./lib/file";
+import { readFile, writeFile } from "./lib/file";
 import JSON5 from "json5";
 import { IExecutionContext, ITealInterpreterConfig, loadValue, TealInterpreter } from "teal-interpreter";
 import * as path from "path";
 import * as fs from "fs-extra";
 import * as os from "os";
-import { config } from 'process';
 
 export class TealRuntime {
 
@@ -137,7 +136,8 @@ export class TealRuntime {
     private async configureInterpreter(configuration: ITealInterpreterConfig, tealCode: string) {
 
         this.interpreter = new TealInterpreter();
-        this.interpreter.load(tealCode, configuration);
+        this.interpreter.load(tealCode);
+        this.interpreter.configure(configuration)
         this.interpreter.context.onConfigNotFound = async (fieldPath: string) => {
             const response = await vscode.window.showInformationMessage(
                 `Field "${fieldPath}" is not defined in your configuration. Do you want to create it?`,
